@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Upload, Download, RefreshCw, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, Download, RefreshCw, ArrowLeft, CheckCircle, AlertCircle, Star } from 'lucide-react';
+import { Header } from '../Header';
 
 interface BaseConverterProps {
   title: string;
@@ -86,34 +87,28 @@ export const BaseConverter: React.FC<BaseConverterProps> = ({
   };
 
   const handleBack = () => {
-    window.history.back();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '/';
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <Header />
+      
+      {/* Back Button */}
+      <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={handleBack}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span>Back</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300" />
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl">
-                  <RefreshCw className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">{title}</h1>
-                  <p className="text-sm text-gray-500">Free Online Converter</p>
-                </div>
-              </div>
-            </div>
+          <div className="py-4">
+            <button
+              onClick={handleBack}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Home</span>
+            </button>
           </div>
         </div>
       </div>
@@ -266,6 +261,30 @@ export const BaseConverter: React.FC<BaseConverterProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-12 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl">
+                <RefreshCw className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold">MorphyIMG</h2>
+            </div>
+            
+            <p className="text-gray-300 mb-6">
+              The ultimate file conversion and viewing platform for professionals and everyday users.
+            </p>
+            
+            <div className="flex items-center justify-center space-x-2 text-sm text-gray-300">
+              <span>© 2025 MorphyIMG. Built with</span>
+              <Star className="w-4 h-4 text-yellow-400 fill-current" />
+              <span>by developers who care about quality.</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
