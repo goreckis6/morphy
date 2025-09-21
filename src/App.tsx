@@ -62,6 +62,7 @@ import { CR2ToWebPConverter } from './components/ConversionPages/CR2ToWebPConver
 import { CSVToAVROConverter } from './components/ConversionPages/CSVToAVROConverter';
 import { CSVToDOCConverter } from './components/ConversionPages/CSVToDOCConverter';
 import { ConversionHub } from './components/ConversionHub';
+import { ConverterHub } from './components/ConverterHub';
 import { AuthProvider } from './contexts/AuthContext';
 import { 
   RefreshCw, 
@@ -600,6 +601,15 @@ function App() {
     return (
       <AuthProvider>
         <CSVToDOCConverter />
+      </AuthProvider>
+    );
+  }
+
+  // Converter Hub Route
+  if (currentPath === '/converters') {
+    return (
+      <AuthProvider>
+        <ConverterHub />
       </AuthProvider>
     );
   }

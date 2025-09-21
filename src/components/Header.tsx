@@ -36,9 +36,49 @@ export const Header: React.FC = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               <nav className="flex items-center space-x-6">
-                <a href="/#converter" className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Converter
-                </a>
+                <div className="relative group">
+                  <button className="text-gray-700 hover:text-blue-600 transition-colors">
+                    Converter
+                  </button>
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <a href="/converters" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg font-medium">
+                      All Converters
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Developer Tools</div>
+                    <a href="/convert/avro-to-csv" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      AVRO to CSV
+                    </a>
+                    <a href="/convert/avro-to-json" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      AVRO to JSON
+                    </a>
+                    <a href="/convert/avro-to-ndjson" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      AVRO to NDJSON
+                    </a>
+                    <a href="/convert/csv-to-avro" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to AVRO
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Image Converters</div>
+                    <a href="/convert/bmp-to-ico" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      BMP to ICO
+                    </a>
+                    <a href="/convert/bmp-to-webp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      BMP to WebP
+                    </a>
+                    <a href="/convert/cr2-to-ico" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CR2 to ICO
+                    </a>
+                    <a href="/convert/cr2-to-webp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CR2 to WebP
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Document Converters</div>
+                    <a href="/convert/csv-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                      CSV to DOC
+                    </a>
+                  </div>
+                </div>
                 <a href="/viewer" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Viewer
                 </a>
@@ -128,9 +168,43 @@ export const Header: React.FC = () => {
           {showMobileMenu && (
             <div className="md:hidden border-t border-gray-200 py-4">
               <nav className="flex flex-col space-y-4">
-                <a href="/#converter" className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Converter
-                </a>
+                <div>
+                  <a href="/converters" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                    All Converters
+                  </a>
+                  <div className="ml-4 mt-2 space-y-1">
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Developer Tools</div>
+                    <a href="/convert/avro-to-csv" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      AVRO to CSV
+                    </a>
+                    <a href="/convert/avro-to-json" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      AVRO to JSON
+                    </a>
+                    <a href="/convert/avro-to-ndjson" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      AVRO to NDJSON
+                    </a>
+                    <a href="/convert/csv-to-avro" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to AVRO
+                    </a>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Image Converters</div>
+                    <a href="/convert/bmp-to-ico" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      BMP to ICO
+                    </a>
+                    <a href="/convert/bmp-to-webp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      BMP to WebP
+                    </a>
+                    <a href="/convert/cr2-to-ico" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CR2 to ICO
+                    </a>
+                    <a href="/convert/cr2-to-webp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CR2 to WebP
+                    </a>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Document Converters</div>
+                    <a href="/convert/csv-to-doc" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to DOC
+                    </a>
+                  </div>
+                </div>
                 <a href="/viewer" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Viewer
                 </a>
