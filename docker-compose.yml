@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  morphyimg:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    
+  # Optional: Add a reverse proxy with SSL
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/proxy.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - morphyimg
+    restart: unless-stopped
