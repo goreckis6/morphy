@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { User, Session } from '../lib/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -28,55 +27,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    // Check for existing session in localStorage
+    const savedUser = localStorage.getItem('morphy_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setUser(user);
+      setSession({ user, access_token: 'local' });
+    }
+    setLoading(false);
   }, []);
 
   const signUp = async (email: string, password: string, username: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username,
-        },
-      },
-    });
+    // Simple local validation
+    if (!email || !password || !username) {
+      return { error: { message: 'All fields are required' } };
+    }
 
-    return { error };
+    // Create user object
+    const user: User = {
+      id: Date.now().toString(),
+      email,
+      username,
+    };
+
+    // Save to localStorage
+    localStorage.setItem('morphy_user', JSON.stringify(user));
+    setUser(user);
+    setSession({ user, access_token: 'local' });
+
+    return { error: null };
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // Simple local validation
+    if (!email || !password) {
+      return { error: { message: 'Email and password are required' } };
+    }
 
-    return { error };
+    // Check if user exists in localStorage
+    const savedUser = localStorage.getItem('morphy_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      if (user.email === email) {
+        setUser(user);
+        setSession({ user, access_token: 'local' });
+        return { error: null };
+      }
+    }
+
+    return { error: { message: 'Invalid credentials' } };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('morphy_user');
+    setUser(null);
+    setSession(null);
   };
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
-    return { error };
+    // Mock password reset - just return success
+    return { error: null };
   };
 
   const value = {
