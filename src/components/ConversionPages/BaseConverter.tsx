@@ -87,11 +87,8 @@ export const BaseConverter: React.FC<BaseConverterProps> = ({
   };
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = '/';
-    }
+    // Always go to home page for consistency
+    window.location.href = '/';
   };
 
   return (
@@ -198,13 +195,29 @@ export const BaseConverter: React.FC<BaseConverterProps> = ({
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <p className="text-green-700 font-medium">Conversion completed successfully!</p>
                   </div>
-                  <button
-                    onClick={handleDownload}
-                    className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center space-x-2 mx-auto"
-                  >
-                    <Download className="w-5 h-5" />
-                    <span>Download {outputFormat.toUpperCase()}</span>
-                  </button>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button
+                      onClick={handleDownload}
+                      className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center space-x-2"
+                    >
+                      <Download className="w-5 h-5" />
+                      <span>Download {outputFormat.toUpperCase()}</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedFile(null);
+                        setConvertedFile(null);
+                        setError(null);
+                        // Reset file input
+                        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                        if (fileInput) fileInput.value = '';
+                      }}
+                      className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                    >
+                      <RefreshCw className="w-5 h-5" />
+                      <span>Convert Another File</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
