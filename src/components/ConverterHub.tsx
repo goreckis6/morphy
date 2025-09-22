@@ -2,89 +2,91 @@ import React from 'react';
 import { RefreshCw, ArrowLeft, FileText, Image, Database, Code, Download } from 'lucide-react';
 import { Header } from './Header';
 
+interface ConversionFormat {
+  name: string;
+  description: string;
+  path: string;
+  inputFormat: string;
+  outputFormat: string;
+}
+
 export const ConverterHub: React.FC = () => {
-  const conversions = [
+  const conversionCategories = [
     {
-      category: 'Developer Tools',
-      icon: <Code className="w-6 h-6 text-blue-600" />,
-      color: 'bg-blue-50 border-blue-200',
-      items: [
-        {
-          title: 'AVRO to CSV',
-          description: 'Convert Apache AVRO files to CSV format for data analysis',
-          url: '/convert/avro-to-csv',
-          inputFormat: 'AVRO',
-          outputFormat: 'CSV'
+      title: "DEVELOPER TOOLS",
+      formats: [
+        { 
+          name: "AVRO to CSV Converter", 
+          description: "Convert Apache AVRO files to CSV format for data analysis and spreadsheet applications",
+          path: "/convert/avro-to-csv",
+          inputFormat: "AVRO",
+          outputFormat: "CSV"
         },
-        {
-          title: 'AVRO to JSON',
-          description: 'Convert AVRO files to JSON format for web applications',
-          url: '/convert/avro-to-json',
-          inputFormat: 'AVRO',
-          outputFormat: 'JSON'
+        { 
+          name: "AVRO to JSON Converter", 
+          description: "Convert AVRO files to JSON format for web applications and APIs",
+          path: "/convert/avro-to-json",
+          inputFormat: "AVRO",
+          outputFormat: "JSON"
         },
-        {
-          title: 'AVRO to NDJSON',
-          description: 'Convert AVRO to Newline Delimited JSON for streaming',
-          url: '/convert/avro-to-ndjson',
-          inputFormat: 'AVRO',
-          outputFormat: 'NDJSON'
+        { 
+          name: "AVRO to NDJSON Converter", 
+          description: "Convert AVRO to Newline Delimited JSON for streaming data processing",
+          path: "/convert/avro-to-ndjson",
+          inputFormat: "AVRO",
+          outputFormat: "NDJSON"
         },
-        {
-          title: 'CSV to AVRO',
-          description: 'Convert CSV files to AVRO format for big data processing',
-          url: '/convert/csv-to-avro',
-          inputFormat: 'CSV',
-          outputFormat: 'AVRO'
+        { 
+          name: "CSV to AVRO Converter", 
+          description: "Convert CSV files to AVRO format for big data processing and storage",
+          path: "/convert/csv-to-avro",
+          inputFormat: "CSV",
+          outputFormat: "AVRO"
         }
       ]
     },
     {
-      category: 'Image Converters',
-      icon: <Image className="w-6 h-6 text-green-600" />,
-      color: 'bg-green-50 border-green-200',
-      items: [
-        {
-          title: 'BMP to ICO',
-          description: 'Convert BMP images to ICO format for Windows icons',
-          url: '/convert/bmp-to-ico',
-          inputFormat: 'BMP',
-          outputFormat: 'ICO'
+      title: "IMAGE CONVERTERS",
+      formats: [
+        { 
+          name: "BMP to ICO Converter", 
+          description: "Convert BMP images to ICO format for Windows icons and applications",
+          path: "/convert/bmp-to-ico",
+          inputFormat: "BMP",
+          outputFormat: "ICO"
         },
-        {
-          title: 'BMP to WebP',
-          description: 'Convert BMP images to WebP for better web performance',
-          url: '/convert/bmp-to-webp',
-          inputFormat: 'BMP',
-          outputFormat: 'WebP'
+        { 
+          name: "BMP to WebP Converter", 
+          description: "Convert BMP images to WebP format for better web performance and smaller file sizes",
+          path: "/convert/bmp-to-webp",
+          inputFormat: "BMP",
+          outputFormat: "WebP"
         },
-        {
-          title: 'CR2 to ICO',
-          description: 'Convert Canon CR2 raw images to ICO format',
-          url: '/convert/cr2-to-ico',
-          inputFormat: 'CR2',
-          outputFormat: 'ICO'
+        { 
+          name: "CR2 to ICO Converter", 
+          description: "Convert Canon CR2 raw images to ICO format for high-quality Windows icons",
+          path: "/convert/cr2-to-ico",
+          inputFormat: "CR2",
+          outputFormat: "ICO"
         },
-        {
-          title: 'CR2 to WebP',
-          description: 'Convert Canon CR2 raw images to WebP format',
-          url: '/convert/cr2-to-webp',
-          inputFormat: 'CR2',
-          outputFormat: 'WebP'
+        { 
+          name: "CR2 to WebP Converter", 
+          description: "Convert Canon CR2 raw images to WebP format for web optimization",
+          path: "/convert/cr2-to-webp",
+          inputFormat: "CR2",
+          outputFormat: "WebP"
         }
       ]
     },
     {
-      category: 'Document Converters',
-      icon: <FileText className="w-6 h-6 text-purple-600" />,
-      color: 'bg-purple-50 border-purple-200',
-      items: [
-        {
-          title: 'CSV to DOC',
-          description: 'Convert CSV files to Microsoft Word DOC format',
-          url: '/convert/csv-to-doc',
-          inputFormat: 'CSV',
-          outputFormat: 'DOC'
+      title: "DOCUMENT CONVERTERS",
+      formats: [
+        { 
+          name: "CSV to DOC Converter", 
+          description: "Convert CSV files to Microsoft Word DOC format for reports and documents",
+          path: "/convert/csv-to-doc",
+          inputFormat: "CSV",
+          outputFormat: "DOC"
         }
       ]
     }
@@ -154,41 +156,45 @@ export const ConverterHub: React.FC = () => {
           </div>
         </div>
 
-        {/* Specialized Converters */}
+        {/* Conversion Categories */}
         <div className="space-y-12">
-          {conversions.map((category, categoryIndex) => (
+          {conversionCategories.map((category, categoryIndex) => (
             <div key={categoryIndex}>
-              <div className="flex items-center space-x-3 mb-6">
-                {category.icon}
-                <h2 className="text-2xl font-bold text-gray-900">{category.category}</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {category.items.map((converter, index) => (
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">{category.title}</h2>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                {category.formats.map((format, formatIndex) => (
                   <div
-                    key={index}
-                    className={`${category.color} rounded-xl p-6 border-2 hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
+                    key={formatIndex}
+                    className={`px-6 py-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors ${
+                      formatIndex === 0 ? 'rounded-t-lg' : ''
+                    } ${formatIndex === category.formats.length - 1 ? 'rounded-b-lg' : ''}`}
                   >
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-bold text-gray-900">{converter.title}</h3>
-                      <div className="flex items-center space-x-1 text-sm text-gray-500">
-                        <span className="font-medium">{converter.inputFormat}</span>
-                        <ArrowLeft className="w-4 h-4 rotate-180" />
-                        <span className="font-medium">{converter.outputFormat}</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="text-lg font-semibold text-gray-900">{format.name}</h3>
+                          <div className="flex items-center space-x-1 text-sm text-gray-500">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                              {format.inputFormat}
+                            </span>
+                            <ArrowLeft className="w-4 h-4 rotate-180 text-gray-400" />
+                            <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
+                              {format.outputFormat}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 text-sm">{format.description}</p>
+                      </div>
+                      <div className="ml-4">
+                        <a
+                          href={format.path}
+                          className="inline-flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          <span>Convert</span>
+                        </a>
                       </div>
                     </div>
-                    
-                    <p className="text-gray-700 mb-4 text-sm">
-                      {converter.description}
-                    </p>
-                    
-                    <a
-                      href={converter.url}
-                      className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                    >
-                      <Download className="w-4 h-4" />
-                      <span>Convert Now</span>
-                    </a>
                   </div>
                 ))}
               </div>
