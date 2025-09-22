@@ -74,8 +74,43 @@ export const Header: React.FC = () => {
                     </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Document Converters</div>
-                    <a href="/convert/csv-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                    <a href="/convert/csv-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       CSV to DOC
+                    </a>
+                    <a href="/convert/csv-to-docx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to DOCX
+                    </a>
+                    <a href="/convert/csv-to-epub" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to EPUB
+                    </a>
+                    <a href="/convert/csv-to-html" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to HTML
+                    </a>
+                    <a href="/convert/csv-to-md" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to MD
+                    </a>
+                    <a href="/convert/csv-to-mobi" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to MOBI
+                    </a>
+                    <a href="/convert/csv-to-odp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to ODP
+                    </a>
+                    <a href="/convert/csv-to-odt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to ODT
+                    </a>
+                    <a href="/convert/csv-to-pdf" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to PDF
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Developer Tools (CSV)</div>
+                    <a href="/convert/csv-to-json" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to JSON
+                    </a>
+                    <a href="/convert/csv-to-ndjson" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to NDJSON
+                    </a>
+                    <a href="/convert/csv-to-parquet" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                      CSV to Parquet
                     </a>
                   </div>
                 </div>
@@ -202,6 +237,40 @@ export const Header: React.FC = () => {
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to DOC
+                    </a>
+                    <a href="/convert/csv-to-docx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to DOCX
+                    </a>
+                    <a href="/convert/csv-to-epub" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to EPUB
+                    </a>
+                    <a href="/convert/csv-to-html" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to HTML
+                    </a>
+                    <a href="/convert/csv-to-md" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to MD
+                    </a>
+                    <a href="/convert/csv-to-mobi" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to MOBI
+                    </a>
+                    <a href="/convert/csv-to-odp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to ODP
+                    </a>
+                    <a href="/convert/csv-to-odt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to ODT
+                    </a>
+                    <a href="/convert/csv-to-pdf" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to PDF
+                    </a>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Developer Tools (CSV)</div>
+                    <a href="/convert/csv-to-json" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to JSON
+                    </a>
+                    <a href="/convert/csv-to-ndjson" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to NDJSON
+                    </a>
+                    <a href="/convert/csv-to-parquet" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to Parquet
                     </a>
                   </div>
                 </div>

@@ -87,6 +87,88 @@ export const ConverterHub: React.FC = () => {
           path: "/convert/csv-to-doc",
           inputFormat: "CSV",
           outputFormat: "DOC"
+        },
+        { 
+          name: "CSV to DOCX Converter", 
+          description: "Convert CSV files to Microsoft Word DOCX format with modern formatting",
+          path: "/convert/csv-to-docx",
+          inputFormat: "CSV",
+          outputFormat: "DOCX"
+        },
+        { 
+          name: "CSV to EPUB Converter", 
+          description: "Convert CSV files to EPUB format for e-books and digital publishing",
+          path: "/convert/csv-to-epub",
+          inputFormat: "CSV",
+          outputFormat: "EPUB"
+        },
+        { 
+          name: "CSV to HTML Converter", 
+          description: "Convert CSV files to HTML format with styled tables for web display",
+          path: "/convert/csv-to-html",
+          inputFormat: "CSV",
+          outputFormat: "HTML"
+        },
+        { 
+          name: "CSV to MD Converter", 
+          description: "Convert CSV files to Markdown format for documentation and GitHub",
+          path: "/convert/csv-to-md",
+          inputFormat: "CSV",
+          outputFormat: "MD"
+        },
+        { 
+          name: "CSV to MOBI Converter", 
+          description: "Convert CSV files to MOBI format for Kindle e-readers",
+          path: "/convert/csv-to-mobi",
+          inputFormat: "CSV",
+          outputFormat: "MOBI"
+        },
+        { 
+          name: "CSV to ODP Converter", 
+          description: "Convert CSV files to OpenDocument Presentation format for slides",
+          path: "/convert/csv-to-odp",
+          inputFormat: "CSV",
+          outputFormat: "ODP"
+        },
+        { 
+          name: "CSV to ODT Converter", 
+          description: "Convert CSV files to OpenDocument Text format for documents",
+          path: "/convert/csv-to-odt",
+          inputFormat: "CSV",
+          outputFormat: "ODT"
+        },
+        { 
+          name: "CSV to PDF Converter", 
+          description: "Convert CSV files to PDF format for reports and sharing",
+          path: "/convert/csv-to-pdf",
+          inputFormat: "CSV",
+          outputFormat: "PDF"
+        }
+      ]
+    },
+    {
+      title: "DEVELOPER TOOLS (CSV)",
+      formats: [
+        { 
+          name: "CSV to JSON Converter", 
+          description: "Convert CSV files to JSON format for web applications and APIs",
+          path: "/convert/csv-to-json",
+          inputFormat: "CSV",
+          outputFormat: "JSON"
+        },
+        { 
+          name: "CSV to NDJSON Converter", 
+          description: "Convert CSV files to Newline Delimited JSON for streaming data",
+          path: "/convert/csv-to-ndjson",
+          inputFormat: "CSV",
+          outputFormat: "NDJSON"
+        },
+        { 
+          name: "CSV to Parquet Converter", 
+          description: "Convert CSV files to Apache Parquet format for big data analytics",
+          path: "/convert/csv-to-parquet",
+          inputFormat: "CSV",
+          outputFormat: "Parquet"
         }
       ]
     }
