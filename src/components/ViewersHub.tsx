@@ -149,13 +149,10 @@ export const ViewersHub: React.FC = () => {
                         </div>
                       </div>
                       <div className="ml-4">
-                        <a
-                          href={viewer.path}
-                          className="inline-flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                        >
+                        <div className="inline-flex items-center space-x-2 bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed">
                           <Eye className="w-4 h-4" />
-                          <span>View</span>
-                        </a>
+                          <span>Coming Soon</span>
+                        </div>
                       </div>
                     </div>
                   </div>
