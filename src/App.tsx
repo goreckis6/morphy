@@ -4,10 +4,6 @@ import { FileUpload } from './components/FileUpload';
 import { ConversionPanel } from './components/ConversionPanel';
 import { FileViewer } from './components/FileViewer';
 import { SupportedFormats } from './components/SupportedFormats';
-import { SpreadsheetViewer } from './components/ViewerPages/SpreadsheetViewer';
-import { ImageViewer } from './components/ViewerPages/ImageViewer';
-import { DocumentViewer } from './components/ViewerPages/DocumentViewer';
-import { MainViewer } from './components/ViewerPages/MainViewer';
 import { JPGToTEXTConverter } from './components/ConversionPages/JPGToTEXTConverter';
 import { JPGToPDFConverter } from './components/ConversionPages/JPGToPDFConverter';
 import { JPGToPNGConverter } from './components/ConversionPages/JPGToPNGConverter';
@@ -78,13 +74,6 @@ function App() {
   }, []);
 
   // Route to specific viewer pages
-  if (currentPath === '/viewer') {
-    return (
-      <AuthProvider>
-        <MainViewer />
-      </AuthProvider>
-    );
-  }
 
 
   // Conversion routes
@@ -390,29 +379,6 @@ function App() {
     );
   }
 
-  if (currentPath === '/spreadsheet-viewer') {
-    return (
-      <AuthProvider>
-        <SpreadsheetViewer />
-      </AuthProvider>
-    );
-  }
-
-  if (currentPath === '/image-viewer') {
-    return (
-      <AuthProvider>
-        <ImageViewer />
-      </AuthProvider>
-    );
-  }
-
-  if (currentPath === '/document-viewer') {
-    return (
-      <AuthProvider>
-        <DocumentViewer />
-      </AuthProvider>
-    );
-  }
 
   const features = [
     { icon: <Zap className="w-6 h-6 text-yellow-600" />, title: 'Lightning Fast', description: 'Process files in seconds with our optimized conversion engine' },
