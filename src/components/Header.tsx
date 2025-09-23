@@ -78,6 +78,15 @@ export const Header: React.FC = () => {
                     <a href="/convert/dng-to-webp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       DNG to WebP
                     </a>
+                    <a href="/convert/eps-to-ico" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPS to ICO
+                    </a>
+                    <a href="/convert/eps-to-webp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPS to WebP
+                    </a>
+                    <a href="/convert/gif-to-ico" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      GIF to ICO
+                    </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -158,6 +167,50 @@ export const Header: React.FC = () => {
                     </a>
                     <a href="/convert/docx-to-txt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       DOCX to TXT
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">E-book Converters (EPUB)</div>
+                    <a href="/convert/epub-to-csv" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to CSV
+                    </a>
+                    <a href="/convert/epub-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to DOC
+                    </a>
+                    <a href="/convert/epub-to-docx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to DOCX
+                    </a>
+                    <a href="/convert/epub-to-html" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to HTML
+                    </a>
+                    <a href="/convert/epub-to-md" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to MD
+                    </a>
+                    <a href="/convert/epub-to-mobi" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to MOBI
+                    </a>
+                    <a href="/convert/epub-to-odp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to ODP
+                    </a>
+                    <a href="/convert/epub-to-odt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to ODT
+                    </a>
+                    <a href="/convert/epub-to-pdf" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to PDF
+                    </a>
+                    <a href="/convert/epub-to-ppt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to PPT
+                    </a>
+                    <a href="/convert/epub-to-pptx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to PPTX
+                    </a>
+                    <a href="/convert/epub-to-rtf" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to RTF
+                    </a>
+                    <a href="/convert/epub-to-txt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to TXT
+                    </a>
+                    <a href="/convert/epub-to-xlsx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      EPUB to XLSX
                     </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Developer Tools (CSV)</div>
@@ -277,6 +330,15 @@ export const Header: React.FC = () => {
                     <a href="/convert/dng-to-webp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       DNG to WebP
                     </a>
+                    <a href="/convert/eps-to-ico" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPS to ICO
+                    </a>
+                    <a href="/convert/eps-to-webp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPS to WebP
+                    </a>
+                    <a href="/convert/gif-to-ico" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      GIF to ICO
+                    </a>
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to DOC
@@ -354,6 +416,49 @@ export const Header: React.FC = () => {
                     </a>
                     <a href="/convert/docx-to-txt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       DOCX to TXT
+                    </a>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">E-book Converters (EPUB)</div>
+                    <a href="/convert/epub-to-csv" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to CSV
+                    </a>
+                    <a href="/convert/epub-to-doc" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to DOC
+                    </a>
+                    <a href="/convert/epub-to-docx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to DOCX
+                    </a>
+                    <a href="/convert/epub-to-html" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to HTML
+                    </a>
+                    <a href="/convert/epub-to-md" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to MD
+                    </a>
+                    <a href="/convert/epub-to-mobi" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to MOBI
+                    </a>
+                    <a href="/convert/epub-to-odp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to ODP
+                    </a>
+                    <a href="/convert/epub-to-odt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to ODT
+                    </a>
+                    <a href="/convert/epub-to-pdf" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to PDF
+                    </a>
+                    <a href="/convert/epub-to-ppt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to PPT
+                    </a>
+                    <a href="/convert/epub-to-pptx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to PPTX
+                    </a>
+                    <a href="/convert/epub-to-rtf" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to RTF
+                    </a>
+                    <a href="/convert/epub-to-txt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to TXT
+                    </a>
+                    <a href="/convert/epub-to-xlsx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      EPUB to XLSX
                     </a>
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Developer Tools (CSV)</div>
                     <a href="/convert/csv-to-json" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">

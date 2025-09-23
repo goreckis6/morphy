@@ -49,6 +49,23 @@ import { DOCXToEPUBConverter } from './components/ConversionPages/DOCXToEPUBConv
 import { DOCXToMOBIConverter } from './components/ConversionPages/DOCXToMOBIConverter';
 import { DOCXToODTConverter } from './components/ConversionPages/DOCXToODTConverter';
 import { DOCXToTXTConverter } from './components/ConversionPages/DOCXToTXTConverter';
+import { EPSToICOConverter } from './components/ConversionPages/EPSToICOConverter';
+import { EPSToWebPConverter } from './components/ConversionPages/EPSToWebPConverter';
+import { EPUBToCSVConverter } from './components/ConversionPages/EPUBToCSVConverter';
+import { EPUBToDOCConverter } from './components/ConversionPages/EPUBToDOCConverter';
+import { EPUBToDOCXConverter } from './components/ConversionPages/EPUBToDOCXConverter';
+import { EPUBToHTMLConverter } from './components/ConversionPages/EPUBToHTMLConverter';
+import { EPUBToMDConverter } from './components/ConversionPages/EPUBToMDConverter';
+import { EPUBToMOBIConverter } from './components/ConversionPages/EPUBToMOBIConverter';
+import { EPUBToODPConverter } from './components/ConversionPages/EPUBToODPConverter';
+import { EPUBToODTConverter } from './components/ConversionPages/EPUBToODTConverter';
+import { EPUBToPDFConverter } from './components/ConversionPages/EPUBToPDFConverter';
+import { EPUBToPPTConverter } from './components/ConversionPages/EPUBToPPTConverter';
+import { EPUBToPPTXConverter } from './components/ConversionPages/EPUBToPPTXConverter';
+import { EPUBToRTFConverter } from './components/ConversionPages/EPUBToRTFConverter';
+import { EPUBToTXTConverter } from './components/ConversionPages/EPUBToTXTConverter';
+import { EPUBToXLSXConverter } from './components/ConversionPages/EPUBToXLSXConverter';
+import { GIFToICOConverter } from './components/ConversionPages/GIFToICOConverter';
 import { ConversionHub } from './components/ConversionHub';
 import { ConverterHub } from './components/ConverterHub';
 import { ViewersHub } from './components/ViewersHub';
@@ -456,6 +473,142 @@ function App() {
     return (
       <AuthProvider>
         <DOCXToTXTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/eps-to-ico') {
+    return (
+      <AuthProvider>
+        <EPSToICOConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/eps-to-webp') {
+    return (
+      <AuthProvider>
+        <EPSToWebPConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-csv') {
+    return (
+      <AuthProvider>
+        <EPUBToCSVConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-doc') {
+    return (
+      <AuthProvider>
+        <EPUBToDOCConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-docx') {
+    return (
+      <AuthProvider>
+        <EPUBToDOCXConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-html') {
+    return (
+      <AuthProvider>
+        <EPUBToHTMLConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-md') {
+    return (
+      <AuthProvider>
+        <EPUBToMDConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-mobi') {
+    return (
+      <AuthProvider>
+        <EPUBToMOBIConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-odp') {
+    return (
+      <AuthProvider>
+        <EPUBToODPConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-odt') {
+    return (
+      <AuthProvider>
+        <EPUBToODTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-pdf') {
+    return (
+      <AuthProvider>
+        <EPUBToPDFConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-ppt') {
+    return (
+      <AuthProvider>
+        <EPUBToPPTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-pptx') {
+    return (
+      <AuthProvider>
+        <EPUBToPPTXConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-rtf') {
+    return (
+      <AuthProvider>
+        <EPUBToRTFConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-txt') {
+    return (
+      <AuthProvider>
+        <EPUBToTXTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/epub-to-xlsx') {
+    return (
+      <AuthProvider>
+        <EPUBToXLSXConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/gif-to-ico') {
+    return (
+      <AuthProvider>
+        <GIFToICOConverter />
       </AuthProvider>
     );
   }

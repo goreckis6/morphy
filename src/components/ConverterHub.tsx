@@ -262,6 +262,135 @@ export const ConverterHub: React.FC = () => {
       ]
     },
     {
+      title: "IMAGE CONVERTERS (VECTOR)",
+      formats: [
+        { 
+          name: "EPS to ICO Converter", 
+          description: "Convert Encapsulated PostScript EPS files to ICO format for Windows icons",
+          path: "/convert/eps-to-ico",
+          inputFormat: "EPS",
+          outputFormat: "ICO"
+        },
+        { 
+          name: "EPS to WebP Converter", 
+          description: "Convert EPS files to WebP format for web optimization",
+          path: "/convert/eps-to-webp",
+          inputFormat: "EPS",
+          outputFormat: "WebP"
+        },
+        { 
+          name: "GIF to ICO Converter", 
+          description: "Convert animated GIF files to ICO format for Windows icons",
+          path: "/convert/gif-to-ico",
+          inputFormat: "GIF",
+          outputFormat: "ICO"
+        }
+      ]
+    },
+    {
+      title: "E-BOOK CONVERTERS (EPUB)",
+      formats: [
+        { 
+          name: "EPUB to CSV Converter", 
+          description: "Convert EPUB e-book files to CSV format for data analysis",
+          path: "/convert/epub-to-csv",
+          inputFormat: "EPUB",
+          outputFormat: "CSV"
+        },
+        { 
+          name: "EPUB to DOC Converter", 
+          description: "Convert EPUB e-books to Microsoft Word DOC format for editing",
+          path: "/convert/epub-to-doc",
+          inputFormat: "EPUB",
+          outputFormat: "DOC"
+        },
+        { 
+          name: "EPUB to DOCX Converter", 
+          description: "Convert EPUB e-books to Microsoft Word DOCX format for modern editing",
+          path: "/convert/epub-to-docx",
+          inputFormat: "EPUB",
+          outputFormat: "DOCX"
+        },
+        { 
+          name: "EPUB to HTML Converter", 
+          description: "Convert EPUB e-books to HTML format for web display",
+          path: "/convert/epub-to-html",
+          inputFormat: "EPUB",
+          outputFormat: "HTML"
+        },
+        { 
+          name: "EPUB to MD Converter", 
+          description: "Convert EPUB e-books to Markdown format for documentation",
+          path: "/convert/epub-to-md",
+          inputFormat: "EPUB",
+          outputFormat: "MD"
+        },
+        { 
+          name: "EPUB to MOBI Converter", 
+          description: "Convert EPUB e-books to MOBI format for Kindle e-readers",
+          path: "/convert/epub-to-mobi",
+          inputFormat: "EPUB",
+          outputFormat: "MOBI"
+        },
+        { 
+          name: "EPUB to ODP Converter", 
+          description: "Convert EPUB e-books to OpenDocument Presentation format",
+          path: "/convert/epub-to-odp",
+          inputFormat: "EPUB",
+          outputFormat: "ODP"
+        },
+        { 
+          name: "EPUB to ODT Converter", 
+          description: "Convert EPUB e-books to OpenDocument Text format",
+          path: "/convert/epub-to-odt",
+          inputFormat: "EPUB",
+          outputFormat: "ODT"
+        },
+        { 
+          name: "EPUB to PDF Converter", 
+          description: "Convert EPUB e-books to PDF format for universal sharing",
+          path: "/convert/epub-to-pdf",
+          inputFormat: "EPUB",
+          outputFormat: "PDF"
+        },
+        { 
+          name: "EPUB to PPT Converter", 
+          description: "Convert EPUB e-books to PowerPoint PPT format for presentations",
+          path: "/convert/epub-to-ppt",
+          inputFormat: "EPUB",
+          outputFormat: "PPT"
+        },
+        { 
+          name: "EPUB to PPTX Converter", 
+          description: "Convert EPUB e-books to PowerPoint PPTX format for modern presentations",
+          path: "/convert/epub-to-pptx",
+          inputFormat: "EPUB",
+          outputFormat: "PPTX"
+        },
+        { 
+          name: "EPUB to RTF Converter", 
+          description: "Convert EPUB e-books to Rich Text Format for cross-platform compatibility",
+          path: "/convert/epub-to-rtf",
+          inputFormat: "EPUB",
+          outputFormat: "RTF"
+        },
+        { 
+          name: "EPUB to TXT Converter", 
+          description: "Convert EPUB e-books to plain text format for universal compatibility",
+          path: "/convert/epub-to-txt",
+          inputFormat: "EPUB",
+          outputFormat: "TXT"
+        },
+        { 
+          name: "EPUB to XLSX Converter", 
+          description: "Convert EPUB e-books to Excel XLSX format for data analysis",
+          path: "/convert/epub-to-xlsx",
+          inputFormat: "EPUB",
+          outputFormat: "XLSX"
+        }
+      ]
+    },
+    {
       title: "DOCUMENT CONVERTERS (DOC)",
       formats: [
         { 
