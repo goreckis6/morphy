@@ -114,42 +114,6 @@ export const Header: React.FC = () => {
                     </a>
                   </div>
                 </div>
-                <a href="/viewer" className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Viewer
-                </a>
-                <div className="relative group">
-                  <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                    Viewers
-                  </button>
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <a href="/viewer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
-                      All Format Viewers
-                    </a>
-                    <div className="border-t border-gray-200 my-1"></div>
-                    <a href="/spreadsheet-viewer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
-                      All Spreadsheets
-                    </a>
-                    <a href="/image-viewer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      All Images
-                    </a>
-                    <a href="/document-viewer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      All Documents
-                    </a>
-                    <div className="border-t border-gray-200 my-1"></div>
-                    <a href="/viewer/jpg" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      JPG Viewer
-                    </a>
-                    <a href="/viewer/png" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      PNG Viewer
-                    </a>
-                    <a href="/viewer/xlsx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Excel Viewer
-                    </a>
-                    <a href="/viewer/pdf" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
-                      PDF Viewer
-                    </a>
-                  </div>
-                </div>
                 <a href="/#supported-formats" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Formats
                 </a>
@@ -274,40 +238,9 @@ export const Header: React.FC = () => {
                     </a>
                   </div>
                 </div>
-                <a href="/viewer" className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Viewer
-                </a>
                 <a href="/#supported-formats" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Formats
                 </a>
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="text-sm font-medium text-gray-500 mb-2">All Format Viewers</div>
-                  <a href="/viewer" className="block text-gray-700 hover:text-blue-600 transition-colors mb-2">
-                    All Format Viewers
-                  </a>
-                  <a href="/spreadsheet-viewer" className="block text-gray-700 hover:text-blue-600 transition-colors mb-2">
-                    All Spreadsheets
-                  </a>
-                  <a href="/image-viewer" className="block text-gray-700 hover:text-blue-600 transition-colors mb-2">
-                    All Images
-                  </a>
-                  <a href="/document-viewer" className="block text-gray-700 hover:text-blue-600 transition-colors">
-                    All Documents
-                  </a>
-                  <div className="text-sm font-medium text-gray-500 mb-2 mt-4">Specific Format Viewers</div>
-                  <a href="/viewer/jpg" className="block text-gray-700 hover:text-blue-600 transition-colors mb-2">
-                    JPG Viewer
-                  </a>
-                  <a href="/viewer/png" className="block text-gray-700 hover:text-blue-600 transition-colors mb-2">
-                    PNG Viewer
-                  </a>
-                  <a href="/viewer/xlsx" className="block text-gray-700 hover:text-blue-600 transition-colors mb-2">
-                    Excel Viewer
-                  </a>
-                  <a href="/viewer/pdf" className="block text-gray-700 hover:text-blue-600 transition-colors">
-                    PDF Viewer
-                  </a>
-                </div>
                 
                 <div className="pt-4 border-t border-gray-200">
                   {user ? (
