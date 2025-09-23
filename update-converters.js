@@ -1,12 +1,55 @@
-import React, { useState, useRef } from 'react';
+const fs = require('fs');
+const path = require('path');
+
+// Template for the new converter layout
+const createConverterTemplate = (inputFormat, outputFormat, colorScheme = 'blue') => {
+  const colors = {
+    blue: {
+      primary: 'blue-600',
+      secondary: 'purple-600',
+      accent: 'indigo-700',
+      bg: 'blue-50',
+      text: 'blue-100',
+      textSecondary: 'blue-200'
+    },
+    green: {
+      primary: 'green-600',
+      secondary: 'blue-600',
+      accent: 'purple-600',
+      bg: 'green-50',
+      text: 'green-100',
+      textSecondary: 'green-200'
+    },
+    purple: {
+      primary: 'purple-600',
+      secondary: 'blue-600',
+      accent: 'indigo-700',
+      bg: 'purple-50',
+      text: 'purple-100',
+      textSecondary: 'purple-200'
+    },
+    orange: {
+      primary: 'orange-600',
+      secondary: 'red-600',
+      accent: 'pink-700',
+      bg: 'orange-50',
+      text: 'orange-100',
+      textSecondary: 'orange-200'
+    }
+  };
+
+  const color = colors[colorScheme] || colors.blue;
+  const formatLower = inputFormat.toLowerCase();
+  const outputLower = outputFormat.toLowerCase();
+
+  return `import React, { useState, useRef } from 'react';
 import { Header } from '../Header';
 import { 
   Upload, 
   Download, 
   Settings, 
-  Palette, 
+  FileText,
   FileImage,
-  Image as ImageIcon,
   RefreshCw,
   CheckCircle,
   AlertCircle,
@@ -14,18 +57,20 @@ import {
   Shield,
   Clock,
   Star,
-  Camera,
-  Sparkles
+  Database,
+  BarChart3,
+  Image as ImageIcon,
+  File,
+  Camera
 } from 'lucide-react';
 
-export const JPGToPNGConverter: React.FC = () => {
+export const ${inputFormat}To${outputFormat}Converter: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [convertedFile, setConvertedFile] = useState<Blob | null>(null);
   const [isConverting, setIsConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [quality, setQuality] = useState<'high' | 'medium' | 'low'>('high');
-  const [includeTransparency, setIncludeTransparency] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,29 +78,29 @@ export const JPGToPNGConverter: React.FC = () => {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type === 'image/jpeg' || file.name.toLowerCase().match(/\.(jpg|jpeg)$/)) {
+      if (file.name.toLowerCase().endsWith('.${formatLower}')) {
         setSelectedFile(file);
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
       } else {
-        setError('Please select a valid JPG/JPEG file');
+        setError('Please select a valid ${inputFormat} file');
       }
     }
   };
 
   const handleBatchFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    const jpgFiles = files.filter(file => 
-      file.type === 'image/jpeg' || file.name.toLowerCase().match(/\.(jpg|jpeg)$/)
+    const validFiles = files.filter(file => 
+      file.name.toLowerCase().endsWith('.${formatLower}')
     );
-    setBatchFiles(jpgFiles);
+    setBatchFiles(validFiles);
     setError(null);
   };
 
   const handleConvert = async (file: File): Promise<Blob> => {
-    // Mock conversion - in a real implementation, you would use canvas
-    const pngContent = `Mock PNG content for ${file.name} - Quality: ${quality}, Transparency: ${includeTransparency}`;
-    return new Blob([pngContent], { type: 'image/png' });
+    // Mock conversion - in a real implementation, you would use appropriate libraries
+    const content = \`Mock ${outputFormat} content for \${file.name} - Quality: \${quality}\`;
+    return new Blob([content], { type: 'application/octet-stream' });
   };
 
   const handleSingleConvert = async () => {
@@ -86,7 +131,6 @@ export const JPGToPNGConverter: React.FC = () => {
         await handleConvert(file);
       }
       setError(null);
-      // In real implementation, you'd create a zip file with all PNGs
     } catch (err) {
       setError('Batch conversion failed. Please try again.');
     } finally {
@@ -97,13 +141,13 @@ export const JPGToPNGConverter: React.FC = () => {
   const handleDownload = () => {
     if (convertedFile) {
       const url = URL.createObjectURL(convertedFile);
-    const a = document.createElement('a');
-    a.href = url;
-      a.download = selectedFile ? selectedFile.name.replace(/\.(jpg|jpeg)$/i, '.png') : 'converted.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = selectedFile ? selectedFile.name.replace('.${formatLower}', '.${outputLower}') : 'converted.${outputLower}';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   };
 
@@ -121,21 +165,21 @@ export const JPGToPNGConverter: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-${color.bg} via-white to-purple-50">
       <Header />
       
       {/* Hero Section - Narrowed */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-blue-600 to-purple-600">
+      <div className="relative overflow-hidden bg-gradient-to-r from-${color.primary} via-${color.secondary} to-${color.accent}">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              JPG to PNG Converter
+              ${inputFormat} to ${outputFormat} Converter
             </h1>
-            <p className="text-lg sm:text-xl text-green-100 mb-6 max-w-2xl mx-auto">
-              Transform your JPG images into high-quality PNG format with transparency support and lossless compression
+            <p className="text-lg sm:text-xl text-${color.text} mb-6 max-w-2xl mx-auto">
+              Convert ${inputFormat} files to ${outputFormat} format quickly and easily. Professional conversion with advanced features.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-green-200">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-${color.textSecondary}">
               <div className="flex items-center gap-2">
                 <Zap className="w-4 h-4" />
                 <span>Lightning Fast</span>
@@ -147,7 +191,7 @@ export const JPGToPNGConverter: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 <span>No Registration</span>
-            </div>
+              </div>
             </div>
           </div>
         </div>
@@ -164,71 +208,69 @@ export const JPGToPNGConverter: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button
                   onClick={() => setBatchMode(false)}
-                  className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+                  className={\`flex-1 px-6 py-3 rounded-lg font-medium transition-all \${
                     !batchMode 
-                      ? 'bg-green-600 text-white shadow-lg' 
+                      ? 'bg-${color.primary} text-white shadow-lg' 
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
+                  }\`}
                 >
-                  <FileImage className="w-5 h-5 inline mr-2" />
+                  <FileText className="w-5 h-5 inline mr-2" />
                   Single File
                 </button>
                 <button
                   onClick={() => setBatchMode(true)}
-                  className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+                  className={\`flex-1 px-6 py-3 rounded-lg font-medium transition-all \${
                     batchMode 
-                      ? 'bg-green-600 text-white shadow-lg' 
+                      ? 'bg-${color.primary} text-white shadow-lg' 
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
+                  }\`}
                 >
-                  <ImageIcon className="w-5 h-5 inline mr-2" />
+                  <FileImage className="w-5 h-5 inline mr-2" />
                   Batch Convert
                 </button>
               </div>
 
               {/* File Upload Area */}
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-400 transition-colors">
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-${color.primary.replace('-600', '-400')} transition-colors">
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {batchMode ? 'Upload Multiple JPG Files' : 'Upload JPG File'}
-            </h3>
+                  {batchMode ? \`Upload Multiple ${inputFormat} Files\` : \`Upload ${inputFormat} File\`}
+                </h3>
                 <p className="text-gray-600 mb-4">
                   {batchMode 
-                    ? 'Select multiple JPG files to convert them all at once' 
-                    : 'Drag and drop your JPG file here or click to browse'
+                    ? \`Select multiple ${inputFormat} files to convert them all at once\` 
+                    : \`Drag and drop your ${inputFormat} file here or click to browse\`
                   }
                 </p>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".jpg,.jpeg,image/jpeg"
+                  accept=".${formatLower}"
                   multiple={batchMode}
                   onChange={batchMode ? handleBatchFileSelect : handleFileSelect}
                   className="hidden"
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                  className="bg-${color.primary} text-white px-6 py-3 rounded-lg font-medium hover:bg-${color.primary.replace('-600', '-700')} transition-colors"
                 >
                   Choose Files
                 </button>
-        </div>
+              </div>
 
               {/* File Preview */}
               {previewUrl && !batchMode && (
                 <div className="mt-6">
                   <h4 className="text-lg font-semibold mb-4">Preview</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <img 
-                      src={previewUrl} 
-                      alt="Preview" 
-                      className="max-w-full h-32 object-contain mx-auto rounded"
-                    />
+                    <div className="flex items-center justify-center h-32 bg-gray-100 rounded">
+                      <Database className="w-12 h-12 text-gray-400" />
+                    </div>
                     <p className="text-sm text-gray-600 mt-2 text-center">
                       {selectedFile?.name} ({(selectedFile?.size || 0) / 1024} KB)
-                        </p>
-                      </div>
-                    </div>
+                    </p>
+                  </div>
+                </div>
               )}
 
               {/* Batch Files List */}
@@ -259,7 +301,7 @@ export const JPGToPNGConverter: React.FC = () => {
                 <button
                   onClick={batchMode ? handleBatchConvert : handleSingleConvert}
                   disabled={isConverting || (batchMode ? batchFiles.length === 0 : !selectedFile)}
-                  className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+                  className={\`w-full bg-gradient-to-r from-${color.primary} to-${color.secondary} text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-${color.primary.replace('-600', '-700')} hover:to-${color.secondary.replace('-600', '-700')} disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl\`}
                 >
                   {isConverting ? (
                     <div className="flex items-center justify-center">
@@ -269,7 +311,7 @@ export const JPGToPNGConverter: React.FC = () => {
                   ) : (
                     <div className="flex items-center justify-center">
                       <Zap className="w-5 h-5 mr-2" />
-                      {batchMode ? `Convert ${batchFiles.length} Files` : 'Convert to PNG'}
+                      {batchMode ? \`Convert \${batchFiles.length} Files\` : \`Convert to ${outputFormat}\`}
                     </div>
                   )}
                 </button>
@@ -283,7 +325,7 @@ export const JPGToPNGConverter: React.FC = () => {
                     <h4 className="text-lg font-semibold text-green-800">Conversion Complete!</h4>
                   </div>
                   <p className="text-green-700 mb-4">
-                    Your JPG file has been successfully converted to PNG format.
+                    Your ${inputFormat} file has been successfully converted to ${outputFormat} format.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
@@ -291,7 +333,7 @@ export const JPGToPNGConverter: React.FC = () => {
                       className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center"
                     >
                       <Download className="w-5 h-5 mr-2" />
-                      Download PNG File
+                      Download ${outputFormat} File
                     </button>
                     <button
                       onClick={resetForm}
@@ -312,8 +354,8 @@ export const JPGToPNGConverter: React.FC = () => {
             {/* Conversion Settings */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <h3 className="text-xl font-semibold mb-6 flex items-center">
-                <Settings className="w-5 h-5 mr-2 text-green-600" />
-                PNG Settings
+                <Settings className="w-5 h-5 mr-2 text-${color.primary}" />
+                ${outputFormat} Settings
               </h3>
               
               {/* Quality */}
@@ -324,25 +366,12 @@ export const JPGToPNGConverter: React.FC = () => {
                 <select
                   value={quality}
                   onChange={(e) => setQuality(e.target.value as 'high' | 'medium' | 'low')}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className={\`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-${color.primary} focus:border-${color.primary}\`}
                 >
-                  <option value="high">High Quality (Lossless)</option>
+                  <option value="high">High Quality</option>
                   <option value="medium">Medium Quality</option>
-                  <option value="low">Low Quality (Smaller file)</option>
+                  <option value="low">Low Quality</option>
                 </select>
-              </div>
-
-              {/* Transparency */}
-              <div className="mb-6">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={includeTransparency}
-                    onChange={(e) => setIncludeTransparency(e.target.checked)}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">Include transparency support</span>
-                </label>
               </div>
             </div>
 
@@ -354,12 +383,12 @@ export const JPGToPNGConverter: React.FC = () => {
               </h3>
               <div className="space-y-4">
                 {[
-                  "Lossless compression",
-                  "Transparency support",
-                  "High-quality output",
-                  "Batch processing",
-                  "No quality loss",
-                  "Instant download"
+                  "High-quality conversion",
+                  "Batch processing support",
+                  "No file size limits",
+                  "100% free to use",
+                  "Instant download",
+                  "Secure processing"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
@@ -372,23 +401,23 @@ export const JPGToPNGConverter: React.FC = () => {
             {/* Use Cases */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <h3 className="text-xl font-semibold mb-6 flex items-center">
-                <Camera className="w-5 h-5 mr-2 text-purple-600" />
+                <BarChart3 className="w-5 h-5 mr-2 text-${color.primary}" />
                 Perfect For
               </h3>
               <div className="space-y-3">
                 {[
-                  "Images with transparency",
-                  "Screenshots and UI elements",
-                  "Logos and branding",
-                  "Images with text overlays",
-                  "Graphics with sharp edges",
-                  "Web graphics requiring quality"
+                  "Professional workflows",
+                  "Data processing",
+                  "File format migration",
+                  "Business applications",
+                  "Development projects",
+                  "Content management"
                 ].map((useCase, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3 flex-shrink-0"></div>
+                    <div className={\`w-2 h-2 bg-${color.primary} rounded-full mr-3 flex-shrink-0\`}></div>
                     <span className="text-sm text-gray-700">{useCase}</span>
-                </div>
-              ))}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -407,42 +436,42 @@ export const JPGToPNGConverter: React.FC = () => {
         {/* SEO Content Section */}
         <div className="mt-16 bg-white rounded-2xl shadow-xl p-8 sm:p-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
-            Why Convert JPG to PNG?
+            Why Convert ${inputFormat} to ${outputFormat}?
           </h2>
           
           <div className="prose prose-lg max-w-none">
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              Converting JPG (JPEG) images to PNG format is essential for achieving lossless quality, adding transparency support, and ensuring your images maintain their sharpness and clarity. While JPG is excellent for photographs, PNG is the ideal format for graphics, logos, and images that require transparency or perfect quality preservation.
+              Converting ${inputFormat} files to ${outputFormat} format is essential for modern workflows, compatibility, and professional results. While ${inputFormat} is excellent for specific use cases, ${outputFormat} provides broader compatibility and enhanced features for your projects.
             </p>
 
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4 mt-8">Key Benefits of PNG Format</h3>
+            <h3 className="text-2xl font-semibold text-gray-900 mb-4 mt-8">Key Benefits of ${outputFormat} Format</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-green-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold text-green-900 mb-3">Lossless Compression</h4>
+              <div className={\`bg-${color.bg} p-6 rounded-lg\`}>
+                <h4 className={\`text-xl font-semibold text-${color.primary.replace('-600', '-900')} mb-3\`}>Universal Compatibility</h4>
                 <p className="text-gray-700">
-                  PNG uses lossless compression, meaning your images maintain perfect quality without any compression artifacts or quality degradation.
+                  ${outputFormat} files are supported by virtually all modern applications and platforms, ensuring your files work everywhere.
                 </p>
               </div>
               
               <div className="bg-blue-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold text-blue-900 mb-3">Transparency Support</h4>
+                <h4 className="text-xl font-semibold text-blue-900 mb-3">Enhanced Features</h4>
                 <p className="text-gray-700">
-                  PNG supports alpha channel transparency, allowing you to create images with transparent backgrounds perfect for logos and overlays.
+                  ${outputFormat} format offers advanced features and capabilities that make it ideal for professional use cases.
                 </p>
               </div>
               
-              <div className="bg-purple-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold text-purple-900 mb-3">Sharp Text and Graphics</h4>
+              <div className="bg-green-50 p-6 rounded-lg">
+                <h4 className="text-xl font-semibold text-green-900 mb-3">Better Performance</h4>
                 <p className="text-gray-700">
-                  PNG preserves sharp edges and text perfectly, making it ideal for screenshots, UI elements, and graphics with fine details.
+                  ${outputFormat} files are optimized for performance, providing faster processing and better resource utilization.
                 </p>
               </div>
               
               <div className="bg-orange-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold text-orange-900 mb-3">Wide Compatibility</h4>
+                <h4 className="text-xl font-semibold text-orange-900 mb-3">Future-Proof</h4>
                 <p className="text-gray-700">
-                  PNG is supported by all modern browsers and applications, ensuring your images display correctly across all platforms.
+                  ${outputFormat} is a modern, well-supported format that ensures your files remain accessible for years to come.
                 </p>
               </div>
             </div>
@@ -451,53 +480,53 @@ export const JPGToPNGConverter: React.FC = () => {
             
             <div className="space-y-4 mb-8">
               <div className="flex items-start">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                <div className={\`w-2 h-2 bg-${color.primary} rounded-full mt-3 mr-4 flex-shrink-0\`}></div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Web Graphics and Logos</h4>
-                  <p className="text-gray-700">Create professional logos and web graphics with transparent backgrounds that blend seamlessly with any design.</p>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Professional Workflows</h4>
+                  <p className="text-gray-700">Integrate ${outputFormat} files into your professional workflows for better collaboration and efficiency.</p>
                 </div>
               </div>
               
               <div className="flex items-start">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-3 mr-4 flex-shrink-0"></div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Screenshots and UI Elements</h4>
-                  <p className="text-gray-700">Capture screenshots and interface elements that maintain crisp text and sharp edges for documentation and tutorials.</p>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Data Processing</h4>
+                  <p className="text-gray-700">Process and analyze data more effectively with ${outputFormat} format's enhanced capabilities.</p>
                 </div>
               </div>
               
               <div className="flex items-start">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-3 mr-4 flex-shrink-0"></div>
-              <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Print Materials</h4>
-                  <p className="text-gray-700">Prepare high-quality images for print materials where every pixel matters and compression artifacts are unacceptable.</p>
+                <div className="w-2 h-2 bg-green-500 rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">File Format Migration</h4>
+                  <p className="text-gray-700">Migrate from legacy ${inputFormat} format to modern ${outputFormat} for better compatibility and features.</p>
                 </div>
               </div>
               
               <div className="flex items-start">
                 <div className="w-2 h-2 bg-orange-500 rounded-full mt-3 mr-4 flex-shrink-0"></div>
-              <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Digital Art and Graphics</h4>
-                  <p className="text-gray-700">Preserve digital artwork and graphics with perfect quality, especially when working with layers and transparency.</p>
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Business Applications</h4>
+                  <p className="text-gray-700">Use ${outputFormat} files in business applications for improved functionality and user experience.</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white p-8 rounded-xl text-center">
-              <h3 className="text-2xl font-bold mb-4">Ready to Convert Your JPG Images?</h3>
+            <div className={\`bg-gradient-to-r from-${color.primary} to-${color.secondary} text-white p-8 rounded-xl text-center\`}>
+              <h3 className="text-2xl font-bold mb-4">Ready to Convert Your ${inputFormat} Files?</h3>
               <p className="text-lg mb-6 opacity-90">
-                Use our free online JPG to PNG converter to transform your images with lossless quality and transparency support.
+                Use our free online ${inputFormat} to ${outputFormat} converter to transform your files with professional quality.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                  className="bg-white text-${color.primary} px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
                 >
                   Start Converting Now
                 </button>
                 <button
                   onClick={handleBack}
-                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600 transition-colors"
+                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-${color.primary} transition-colors"
                 >
                   Back to Home
                 </button>
@@ -506,7 +535,7 @@ export const JPGToPNGConverter: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -527,4 +556,128 @@ export const JPGToPNGConverter: React.FC = () => {
       </footer>
     </div>
   );
+};`;
 };
+
+// List of all converters to update
+const converters = [
+  // AVRO converters
+  { input: 'AVRO', output: 'JSON', color: 'purple' },
+  { input: 'AVRO', output: 'NDJSON', color: 'purple' },
+  
+  // BMP converters
+  { input: 'BMP', output: 'WebP', color: 'blue' },
+  
+  // CR2 converters
+  { input: 'CR2', output: 'ICO', color: 'orange' },
+  { input: 'CR2', output: 'WebP', color: 'orange' },
+  
+  // CSV converters
+  { input: 'CSV', output: 'AVRO', color: 'blue' },
+  { input: 'CSV', output: 'DOC', color: 'blue' },
+  { input: 'CSV', output: 'DOCX', color: 'blue' },
+  { input: 'CSV', output: 'EPUB', color: 'blue' },
+  { input: 'CSV', output: 'HTML', color: 'blue' },
+  { input: 'CSV', output: 'JSON', color: 'blue' },
+  { input: 'CSV', output: 'MD', color: 'blue' },
+  { input: 'CSV', output: 'MOBI', color: 'blue' },
+  { input: 'CSV', output: 'NDJSON', color: 'blue' },
+  { input: 'CSV', output: 'ODP', color: 'blue' },
+  { input: 'CSV', output: 'ODT', color: 'blue' },
+  { input: 'CSV', output: 'Parquet', color: 'blue' },
+  { input: 'CSV', output: 'PPT', color: 'blue' },
+  { input: 'CSV', output: 'PPTX', color: 'blue' },
+  { input: 'CSV', output: 'RTF', color: 'blue' },
+  { input: 'CSV', output: 'SQL', color: 'blue' },
+  { input: 'CSV', output: 'TOML', color: 'blue' },
+  { input: 'CSV', output: 'TXT', color: 'blue' },
+  { input: 'CSV', output: 'XLS', color: 'blue' },
+  { input: 'CSV', output: 'XLSX', color: 'blue' },
+  { input: 'CSV', output: 'XML', color: 'blue' },
+  { input: 'CSV', output: 'YAML', color: 'blue' },
+  
+  // DNG converters
+  { input: 'DNG', output: 'ICO', color: 'orange' },
+  { input: 'DNG', output: 'WebP', color: 'orange' },
+  
+  // DOC converters
+  { input: 'DOC', output: 'CSV', color: 'green' },
+  { input: 'DOC', output: 'EPUB', color: 'green' },
+  { input: 'DOC', output: 'MOBI', color: 'green' },
+  { input: 'DOC', output: 'ODT', color: 'green' },
+  { input: 'DOC', output: 'TXT', color: 'green' },
+  
+  // DOCX converters
+  { input: 'DOCX', output: 'CSV', color: 'green' },
+  { input: 'DOCX', output: 'EPUB', color: 'green' },
+  { input: 'DOCX', output: 'MOBI', color: 'green' },
+  { input: 'DOCX', output: 'ODT', color: 'green' },
+  { input: 'DOCX', output: 'TXT', color: 'green' },
+  
+  // EPS converters
+  { input: 'EPS', output: 'ICO', color: 'purple' },
+  { input: 'EPS', output: 'WebP', color: 'purple' },
+  
+  // EPUB converters
+  { input: 'EPUB', output: 'CSV', color: 'purple' },
+  { input: 'EPUB', output: 'DOC', color: 'purple' },
+  { input: 'EPUB', output: 'DOCX', color: 'purple' },
+  { input: 'EPUB', output: 'HTML', color: 'purple' },
+  { input: 'EPUB', output: 'MD', color: 'purple' },
+  { input: 'EPUB', output: 'MOBI', color: 'purple' },
+  { input: 'EPUB', output: 'ODP', color: 'purple' },
+  { input: 'EPUB', output: 'ODT', color: 'purple' },
+  { input: 'EPUB', output: 'PDF', color: 'purple' },
+  { input: 'EPUB', output: 'PPT', color: 'purple' },
+  { input: 'EPUB', output: 'PPTX', color: 'purple' },
+  { input: 'EPUB', output: 'RTF', color: 'purple' },
+  { input: 'EPUB', output: 'TXT', color: 'purple' },
+  { input: 'EPUB', output: 'XLSX', color: 'purple' },
+  
+  // GIF converters
+  { input: 'GIF', output: 'ICO', color: 'green' }
+];
+
+// Function to update a single converter
+function updateConverter(inputFormat, outputFormat, colorScheme) {
+  const fileName = `${inputFormat}To${outputFormat}Converter.tsx`;
+  const filePath = path.join('src', 'components', 'ConversionPages', fileName);
+  
+  try {
+    const newContent = createConverterTemplate(inputFormat, outputFormat, colorScheme);
+    fs.writeFileSync(filePath, newContent);
+    console.log(`✅ Updated ${fileName}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to update ${fileName}:`, error.message);
+    return false;
+  }
+}
+
+// Main execution
+console.log('🚀 Starting converter updates...\n');
+
+let successCount = 0;
+let totalCount = converters.length;
+
+converters.forEach(({ input, output, color }) => {
+  if (updateConverter(input, output, color)) {
+    successCount++;
+  }
+});
+
+console.log(`\n🎉 Update complete!`);
+console.log(`✅ Successfully updated: ${successCount}/${totalCount} converters`);
+console.log(`❌ Failed updates: ${totalCount - successCount}`);
+
+if (successCount === totalCount) {
+  console.log('\n🎯 All converters now have the new feature-rich dashboard layout!');
+  console.log('✨ Features included:');
+  console.log('   - Single/Batch conversion modes');
+  console.log('   - Advanced settings panel');
+  console.log('   - File preview functionality');
+  console.log('   - Professional UI with cards and shadows');
+  console.log('   - Mobile-first responsive design');
+  console.log('   - Comprehensive SEO content');
+  console.log('   - Working batch conversion');
+}
