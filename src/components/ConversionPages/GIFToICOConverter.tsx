@@ -27,7 +27,7 @@ export const GIFToICOConverter: React.FC = () => {
         "Frame preservation",
         "High-quality output"
       ]}
-      useCases=[
+      useCases={[
         "Animated application icons",
         "Website favicon creation",
         "Windows desktop icons",
