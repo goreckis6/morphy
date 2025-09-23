@@ -8,6 +8,47 @@ import { SpreadsheetViewer } from './components/ViewerPages/SpreadsheetViewer';
 import { ImageViewer } from './components/ViewerPages/ImageViewer';
 import { DocumentViewer } from './components/ViewerPages/DocumentViewer';
 import { MainViewer } from './components/ViewerPages/MainViewer';
+import { JPGViewer } from './components/FormatViewers/JPGViewer';
+import { PNGViewer } from './components/FormatViewers/PNGViewer';
+import { XLSXViewer } from './components/FormatViewers/XLSXViewer';
+import { PDFViewer } from './components/FormatViewers/PDFViewer';
+import { JPEGViewer } from './components/FormatViewers/JPEGViewer';
+import { WebPViewer } from './components/FormatViewers/WebPViewer';
+import { GIFViewer } from './components/FormatViewers/GIFViewer';
+import { SVGViewer } from './components/FormatViewers/SVGViewer';
+import { TIFFViewer } from './components/FormatViewers/TIFFViewer';
+import { BMPViewer } from './components/FormatViewers/BMPViewer';
+import { ICOViewer } from './components/FormatViewers/ICOViewer';
+import { HEICViewer } from './components/FormatViewers/HEICViewer';
+import { AVIFViewer } from './components/FormatViewers/AVIFViewer';
+import { CURViewer } from './components/FormatViewers/CURViewer';
+import { EPSViewer } from './components/FormatViewers/EPSViewer';
+import { AIViewer } from './components/FormatViewers/AIViewer';
+import { PSViewer } from './components/FormatViewers/PSViewer';
+import { DOCXViewer } from './components/FormatViewers/DOCXViewer';
+import { RTFViewer } from './components/FormatViewers/RTFViewer';
+import { ODTViewer } from './components/FormatViewers/ODTViewer';
+import { TXTViewer } from './components/FormatViewers/TXTViewer';
+import { CSVViewer } from './components/FormatViewers/CSVViewer';
+import { ODSViewer } from './components/FormatViewers/ODSViewer';
+import { JSViewer } from './components/FormatViewers/JSViewer';
+import { PythonViewer } from './components/FormatViewers/PythonViewer';
+import { CSSViewer } from './components/FormatViewers/CSSViewer';
+import { HTMLViewer } from './components/FormatViewers/HTMLViewer';
+import { JSONViewer } from './components/FormatViewers/JSONViewer';
+import { XMLViewer } from './components/FormatViewers/XMLViewer';
+import { MarkdownViewer } from './components/FormatViewers/MarkdownViewer';
+import { NEFViewer } from './components/FormatViewers/NEFViewer';
+import { CR2Viewer } from './components/FormatViewers/CR2Viewer';
+import { DCRViewer } from './components/FormatViewers/DCRViewer';
+import { X3FViewer } from './components/FormatViewers/X3FViewer';
+import { ARWViewer } from './components/FormatViewers/ARWViewer';
+import { ERFViewer } from './components/FormatViewers/ERFViewer';
+import { RAFViewer } from './components/FormatViewers/RAFViewer';
+import { ThreeFRViewer } from './components/FormatViewers/ThreeFRViewer';
+import { ORFViewer } from './components/FormatViewers/ORFViewer';
+import { DNGViewer } from './components/FormatViewers/DNGViewer';
+import { PEFViewer } from './components/FormatViewers/PEFViewer';
 import { JPGToTEXTConverter } from './components/ConversionPages/JPGToTEXTConverter';
 import { JPGToPDFConverter } from './components/ConversionPages/JPGToPDFConverter';
 import { JPGToPNGConverter } from './components/ConversionPages/JPGToPNGConverter';
@@ -86,6 +127,334 @@ function App() {
     );
   }
 
+  // Individual Viewer Routes
+  if (currentPath === '/viewer/jpeg') {
+    return (
+      <AuthProvider>
+        <JPEGViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/jpg') {
+    return (
+      <AuthProvider>
+        <JPGViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/png') {
+    return (
+      <AuthProvider>
+        <PNGViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/webp') {
+    return (
+      <AuthProvider>
+        <WebPViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/gif') {
+    return (
+      <AuthProvider>
+        <GIFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/svg') {
+    return (
+      <AuthProvider>
+        <SVGViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/tiff') {
+    return (
+      <AuthProvider>
+        <TIFFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/bmp') {
+    return (
+      <AuthProvider>
+        <BMPViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/ico') {
+    return (
+      <AuthProvider>
+        <ICOViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/heic') {
+    return (
+      <AuthProvider>
+        <HEICViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/avif') {
+    return (
+      <AuthProvider>
+        <AVIFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/cur') {
+    return (
+      <AuthProvider>
+        <CURViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/eps') {
+    return (
+      <AuthProvider>
+        <EPSViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/ai') {
+    return (
+      <AuthProvider>
+        <AIViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/ps') {
+    return (
+      <AuthProvider>
+        <PSViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/pdf') {
+    return (
+      <AuthProvider>
+        <PDFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/docx') {
+    return (
+      <AuthProvider>
+        <DOCXViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/rtf') {
+    return (
+      <AuthProvider>
+        <RTFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/odt') {
+    return (
+      <AuthProvider>
+        <ODTViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/txt') {
+    return (
+      <AuthProvider>
+        <TXTViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/xlsx') {
+    return (
+      <AuthProvider>
+        <XLSXViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/csv') {
+    return (
+      <AuthProvider>
+        <CSVViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/ods') {
+    return (
+      <AuthProvider>
+        <ODSViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/js') {
+    return (
+      <AuthProvider>
+        <JSViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/py') {
+    return (
+      <AuthProvider>
+        <PythonViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/css') {
+    return (
+      <AuthProvider>
+        <CSSViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/html') {
+    return (
+      <AuthProvider>
+        <HTMLViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/json') {
+    return (
+      <AuthProvider>
+        <JSONViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/xml') {
+    return (
+      <AuthProvider>
+        <XMLViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/md') {
+    return (
+      <AuthProvider>
+        <MarkdownViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/nef') {
+    return (
+      <AuthProvider>
+        <NEFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/cr2') {
+    return (
+      <AuthProvider>
+        <CR2Viewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/dcr') {
+    return (
+      <AuthProvider>
+        <DCRViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/x3f') {
+    return (
+      <AuthProvider>
+        <X3FViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/arw') {
+    return (
+      <AuthProvider>
+        <ARWViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/erf') {
+    return (
+      <AuthProvider>
+        <ERFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/raf') {
+    return (
+      <AuthProvider>
+        <RAFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/3fr') {
+    return (
+      <AuthProvider>
+        <ThreeFRViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/orf') {
+    return (
+      <AuthProvider>
+        <ORFViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/dng') {
+    return (
+      <AuthProvider>
+        <DNGViewer />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/viewer/pef') {
+    return (
+      <AuthProvider>
+        <PEFViewer />
+      </AuthProvider>
+    );
+  }
 
   // Conversion routes
   if (currentPath === '/convert/jpg-to-text') {
