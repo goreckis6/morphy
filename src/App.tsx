@@ -38,6 +38,17 @@ import { CSVToXLSXConverter } from './components/ConversionPages/CSVToXLSXConver
 import { CSVToXMLConverter } from './components/ConversionPages/CSVToXMLConverter';
 import { CSVToYAMLConverter } from './components/ConversionPages/CSVToYAMLConverter';
 import { DNGToICOConverter } from './components/ConversionPages/DNGToICOConverter';
+import { DNGToWebPConverter } from './components/ConversionPages/DNGToWebPConverter';
+import { DOCToCSVConverter } from './components/ConversionPages/DOCToCSVConverter';
+import { DOCToEPUBConverter } from './components/ConversionPages/DOCToEPUBConverter';
+import { DOCToMOBIConverter } from './components/ConversionPages/DOCToMOBIConverter';
+import { DOCToODTConverter } from './components/ConversionPages/DOCToODTConverter';
+import { DOCToTXTConverter } from './components/ConversionPages/DOCToTXTConverter';
+import { DOCXToCSVConverter } from './components/ConversionPages/DOCXToCSVConverter';
+import { DOCXToEPUBConverter } from './components/ConversionPages/DOCXToEPUBConverter';
+import { DOCXToMOBIConverter } from './components/ConversionPages/DOCXToMOBIConverter';
+import { DOCXToODTConverter } from './components/ConversionPages/DOCXToODTConverter';
+import { DOCXToTXTConverter } from './components/ConversionPages/DOCXToTXTConverter';
 import { ConversionHub } from './components/ConversionHub';
 import { ConverterHub } from './components/ConverterHub';
 import { ViewersHub } from './components/ViewersHub';
@@ -357,6 +368,94 @@ function App() {
     return (
       <AuthProvider>
         <DNGToICOConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/dng-to-webp') {
+    return (
+      <AuthProvider>
+        <DNGToWebPConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/doc-to-csv') {
+    return (
+      <AuthProvider>
+        <DOCToCSVConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/doc-to-epub') {
+    return (
+      <AuthProvider>
+        <DOCToEPUBConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/doc-to-mobi') {
+    return (
+      <AuthProvider>
+        <DOCToMOBIConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/doc-to-odt') {
+    return (
+      <AuthProvider>
+        <DOCToODTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/doc-to-txt') {
+    return (
+      <AuthProvider>
+        <DOCToTXTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/docx-to-csv') {
+    return (
+      <AuthProvider>
+        <DOCXToCSVConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/docx-to-epub') {
+    return (
+      <AuthProvider>
+        <DOCXToEPUBConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/docx-to-mobi') {
+    return (
+      <AuthProvider>
+        <DOCXToMOBIConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/docx-to-odt') {
+    return (
+      <AuthProvider>
+        <DOCXToODTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/docx-to-txt') {
+    return (
+      <AuthProvider>
+        <DOCXToTXTConverter />
       </AuthProvider>
     );
   }

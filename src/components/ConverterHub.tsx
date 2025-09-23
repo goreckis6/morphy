@@ -251,6 +251,93 @@ export const ConverterHub: React.FC = () => {
           path: "/convert/dng-to-ico",
           inputFormat: "DNG",
           outputFormat: "ICO"
+        },
+        { 
+          name: "DNG to WebP Converter", 
+          description: "Convert Adobe DNG raw images to WebP format for web optimization",
+          path: "/convert/dng-to-webp",
+          inputFormat: "DNG",
+          outputFormat: "WebP"
+        }
+      ]
+    },
+    {
+      title: "DOCUMENT CONVERTERS (DOC)",
+      formats: [
+        { 
+          name: "DOC to CSV Converter", 
+          description: "Convert Microsoft Word DOC files to CSV format for data analysis",
+          path: "/convert/doc-to-csv",
+          inputFormat: "DOC",
+          outputFormat: "CSV"
+        },
+        { 
+          name: "DOC to EPUB Converter", 
+          description: "Convert DOC files to EPUB format for e-books and digital publishing",
+          path: "/convert/doc-to-epub",
+          inputFormat: "DOC",
+          outputFormat: "EPUB"
+        },
+        { 
+          name: "DOC to MOBI Converter", 
+          description: "Convert DOC files to MOBI format for Kindle e-readers",
+          path: "/convert/doc-to-mobi",
+          inputFormat: "DOC",
+          outputFormat: "MOBI"
+        },
+        { 
+          name: "DOC to ODT Converter", 
+          description: "Convert DOC files to OpenDocument Text format for cross-platform compatibility",
+          path: "/convert/doc-to-odt",
+          inputFormat: "DOC",
+          outputFormat: "ODT"
+        },
+        { 
+          name: "DOC to TXT Converter", 
+          description: "Convert DOC files to plain text format for universal compatibility",
+          path: "/convert/doc-to-txt",
+          inputFormat: "DOC",
+          outputFormat: "TXT"
+        }
+      ]
+    },
+    {
+      title: "DOCUMENT CONVERTERS (DOCX)",
+      formats: [
+        { 
+          name: "DOCX to CSV Converter", 
+          description: "Convert Microsoft Word DOCX files to CSV format for data analysis",
+          path: "/convert/docx-to-csv",
+          inputFormat: "DOCX",
+          outputFormat: "CSV"
+        },
+        { 
+          name: "DOCX to EPUB Converter", 
+          description: "Convert DOCX files to EPUB format for e-books and digital publishing",
+          path: "/convert/docx-to-epub",
+          inputFormat: "DOCX",
+          outputFormat: "EPUB"
+        },
+        { 
+          name: "DOCX to MOBI Converter", 
+          description: "Convert DOCX files to MOBI format for Kindle e-readers",
+          path: "/convert/docx-to-mobi",
+          inputFormat: "DOCX",
+          outputFormat: "MOBI"
+        },
+        { 
+          name: "DOCX to ODT Converter", 
+          description: "Convert DOCX files to OpenDocument Text format for cross-platform compatibility",
+          path: "/convert/docx-to-odt",
+          inputFormat: "DOCX",
+          outputFormat: "ODT"
+        },
+        { 
+          name: "DOCX to TXT Converter", 
+          description: "Convert DOCX files to plain text format for universal compatibility",
+          path: "/convert/docx-to-txt",
+          inputFormat: "DOCX",
+          outputFormat: "TXT"
         }
       ]
     }

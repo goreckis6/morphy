@@ -75,6 +75,9 @@ export const Header: React.FC = () => {
                     <a href="/convert/dng-to-ico" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       DNG to ICO
                     </a>
+                    <a href="/convert/dng-to-webp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DNG to WebP
+                    </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -121,6 +124,40 @@ export const Header: React.FC = () => {
                     </a>
                     <a href="/convert/csv-to-xlsx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       CSV to XLSX
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">DOC Converters</div>
+                    <a href="/convert/doc-to-csv" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOC to CSV
+                    </a>
+                    <a href="/convert/doc-to-epub" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOC to EPUB
+                    </a>
+                    <a href="/convert/doc-to-mobi" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOC to MOBI
+                    </a>
+                    <a href="/convert/doc-to-odt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOC to ODT
+                    </a>
+                    <a href="/convert/doc-to-txt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOC to TXT
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">DOCX Converters</div>
+                    <a href="/convert/docx-to-csv" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOCX to CSV
+                    </a>
+                    <a href="/convert/docx-to-epub" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOCX to EPUB
+                    </a>
+                    <a href="/convert/docx-to-mobi" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOCX to MOBI
+                    </a>
+                    <a href="/convert/docx-to-odt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOCX to ODT
+                    </a>
+                    <a href="/convert/docx-to-txt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DOCX to TXT
                     </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Developer Tools (CSV)</div>
@@ -237,6 +274,9 @@ export const Header: React.FC = () => {
                     <a href="/convert/dng-to-ico" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       DNG to ICO
                     </a>
+                    <a href="/convert/dng-to-webp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DNG to WebP
+                    </a>
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to DOC
@@ -282,6 +322,38 @@ export const Header: React.FC = () => {
                     </a>
                     <a href="/convert/csv-to-xlsx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to XLSX
+                    </a>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">DOC Converters</div>
+                    <a href="/convert/doc-to-csv" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOC to CSV
+                    </a>
+                    <a href="/convert/doc-to-epub" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOC to EPUB
+                    </a>
+                    <a href="/convert/doc-to-mobi" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOC to MOBI
+                    </a>
+                    <a href="/convert/doc-to-odt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOC to ODT
+                    </a>
+                    <a href="/convert/doc-to-txt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOC to TXT
+                    </a>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">DOCX Converters</div>
+                    <a href="/convert/docx-to-csv" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOCX to CSV
+                    </a>
+                    <a href="/convert/docx-to-epub" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOCX to EPUB
+                    </a>
+                    <a href="/convert/docx-to-mobi" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOCX to MOBI
+                    </a>
+                    <a href="/convert/docx-to-odt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOCX to ODT
+                    </a>
+                    <a href="/convert/docx-to-txt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DOCX to TXT
                     </a>
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Developer Tools (CSV)</div>
                     <a href="/convert/csv-to-json" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
