@@ -647,6 +647,12 @@ function updateConverter(inputFormat, outputFormat, colorScheme) {
   const fileName = `${inputFormat}To${outputFormat}Converter.tsx`;
   const filePath = path.join(__dirname, 'components', 'ConversionPages', fileName);
   
+  // Check if file exists first
+  if (!fs.existsSync(filePath)) {
+    console.log(`⏭️  Skipping ${fileName} (file doesn't exist)`);
+    return false;
+  }
+  
   try {
     const newContent = createConverterTemplate(inputFormat, outputFormat, colorScheme);
     fs.writeFileSync(filePath, newContent);
@@ -658,24 +664,52 @@ function updateConverter(inputFormat, outputFormat, colorScheme) {
   }
 }
 
+// Function to list existing converter files
+function listExistingConverters() {
+  const conversionPagesDir = path.join(__dirname, 'components', 'ConversionPages');
+  console.log('📁 Checking existing converter files...\n');
+  
+  try {
+    const files = fs.readdirSync(conversionPagesDir);
+    const converterFiles = files.filter(file => file.endsWith('Converter.tsx') && file !== 'BaseConverter.tsx');
+    
+    console.log(`Found ${converterFiles.length} converter files:`);
+    converterFiles.forEach(file => console.log(`  - ${file}`));
+    console.log('');
+    
+    return converterFiles;
+  } catch (error) {
+    console.error('❌ Error reading ConversionPages directory:', error.message);
+    return [];
+  }
+}
+
 // Main execution
 console.log('🚀 Starting converter updates...\n');
 
+// First, list existing files
+const existingFiles = listExistingConverters();
+
 let successCount = 0;
 let totalCount = converters.length;
+let skippedCount = 0;
 
 converters.forEach(({ input, output, color }) => {
-  if (updateConverter(input, output, color)) {
+  const result = updateConverter(input, output, color);
+  if (result === true) {
     successCount++;
+  } else if (result === false) {
+    skippedCount++;
   }
 });
 
 console.log(`\n🎉 Update complete!`);
-console.log(`✅ Successfully updated: ${successCount}/${totalCount} converters`);
-console.log(`❌ Failed updates: ${totalCount - successCount}`);
+console.log(`✅ Successfully updated: ${successCount} converters`);
+console.log(`⏭️  Skipped (file doesn't exist): ${skippedCount} converters`);
+console.log(`❌ Failed updates: ${totalCount - successCount - skippedCount}`);
 
-if (successCount === totalCount) {
-  console.log('\n🎯 All converters now have the new feature-rich dashboard layout!');
+if (successCount > 0) {
+  console.log('\n🎯 Updated converters now have the new feature-rich dashboard layout!');
   console.log('✨ Features included:');
   console.log('   - Single/Batch conversion modes');
   console.log('   - Advanced settings panel');
