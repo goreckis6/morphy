@@ -114,6 +114,9 @@ export const Header: React.FC = () => {
                     </a>
                   </div>
                 </div>
+                <a href="/viewers" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  Viewers
+                </a>
                 <a href="/#supported-formats" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Formats
                 </a>
@@ -238,6 +241,9 @@ export const Header: React.FC = () => {
                     </a>
                   </div>
                 </div>
+                <a href="/viewers" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  Viewers
+                </a>
                 <a href="/#supported-formats" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Formats
                 </a>

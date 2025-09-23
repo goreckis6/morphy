@@ -74,6 +74,7 @@ import { CSVToParquetConverter } from './components/ConversionPages/CSVToParquet
 import { CSVToPDFConverter } from './components/ConversionPages/CSVToPDFConverter';
 import { ConversionHub } from './components/ConversionHub';
 import { ConverterHub } from './components/ConverterHub';
+import { ViewersHub } from './components/ViewersHub';
 import { AuthProvider } from './contexts/AuthContext';
 import { 
   RefreshCw, 
@@ -709,6 +710,15 @@ function App() {
     return (
       <AuthProvider>
         <ConverterHub />
+      </AuthProvider>
+    );
+  }
+
+  // Viewers Hub Route
+  if (currentPath === '/viewers') {
+    return (
+      <AuthProvider>
+        <ViewersHub />
       </AuthProvider>
     );
   }
