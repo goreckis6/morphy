@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Template for the new converter layout
 const createConverterTemplate = (inputFormat, outputFormat, colorScheme = 'blue') => {
@@ -641,7 +645,7 @@ const converters = [
 // Function to update a single converter
 function updateConverter(inputFormat, outputFormat, colorScheme) {
   const fileName = `${inputFormat}To${outputFormat}Converter.tsx`;
-  const filePath = path.join('src', 'components', 'ConversionPages', fileName);
+  const filePath = path.join(__dirname, 'components', 'ConversionPages', fileName);
   
   try {
     const newContent = createConverterTemplate(inputFormat, outputFormat, colorScheme);
