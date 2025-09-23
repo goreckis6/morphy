@@ -72,9 +72,19 @@ import { CSVToODPConverter } from './components/ConversionPages/CSVToODPConverte
 import { CSVToODTConverter } from './components/ConversionPages/CSVToODTConverter';
 import { CSVToParquetConverter } from './components/ConversionPages/CSVToParquetConverter';
 import { CSVToPDFConverter } from './components/ConversionPages/CSVToPDFConverter';
+import { CSVToPPTConverter } from './components/ConversionPages/CSVToPPTConverter';
+import { CSVToPPTXConverter } from './components/ConversionPages/CSVToPPTXConverter';
+import { CSVToRTFConverter } from './components/ConversionPages/CSVToRTFConverter';
+import { CSVToSQLConverter } from './components/ConversionPages/CSVToSQLConverter';
+import { CSVToTOMLConverter } from './components/ConversionPages/CSVToTOMLConverter';
+import { CSVToTXTConverter } from './components/ConversionPages/CSVToTXTConverter';
+import { CSVToXLSConverter } from './components/ConversionPages/CSVToXLSConverter';
+import { CSVToXLSXConverter } from './components/ConversionPages/CSVToXLSXConverter';
+import { CSVToXMLConverter } from './components/ConversionPages/CSVToXMLConverter';
+import { CSVToYAMLConverter } from './components/ConversionPages/CSVToYAMLConverter';
+import { DNGToICOConverter } from './components/ConversionPages/DNGToICOConverter';
 import { ConversionHub } from './components/ConversionHub';
 import { ConverterHub } from './components/ConverterHub';
-import { ViewersHub } from './components/ViewersHub';
 import { AuthProvider } from './contexts/AuthContext';
 import { 
   RefreshCw, 
@@ -705,6 +715,94 @@ function App() {
     );
   }
 
+  if (currentPath === '/convert/csv-to-ppt') {
+    return (
+      <AuthProvider>
+        <CSVToPPTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-pptx') {
+    return (
+      <AuthProvider>
+        <CSVToPPTXConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-rtf') {
+    return (
+      <AuthProvider>
+        <CSVToRTFConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-sql') {
+    return (
+      <AuthProvider>
+        <CSVToSQLConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-toml') {
+    return (
+      <AuthProvider>
+        <CSVToTOMLConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-txt') {
+    return (
+      <AuthProvider>
+        <CSVToTXTConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-xls') {
+    return (
+      <AuthProvider>
+        <CSVToXLSConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-xlsx') {
+    return (
+      <AuthProvider>
+        <CSVToXLSXConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-xml') {
+    return (
+      <AuthProvider>
+        <CSVToXMLConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/csv-to-yaml') {
+    return (
+      <AuthProvider>
+        <CSVToYAMLConverter />
+      </AuthProvider>
+    );
+  }
+
+  if (currentPath === '/convert/dng-to-ico') {
+    return (
+      <AuthProvider>
+        <DNGToICOConverter />
+      </AuthProvider>
+    );
+  }
+
   // Converter Hub Route
   if (currentPath === '/converters') {
     return (
@@ -714,14 +812,6 @@ function App() {
     );
   }
 
-  // Viewers Hub Route
-  if (currentPath === '/viewers') {
-    return (
-      <AuthProvider>
-        <ViewersHub />
-      </AuthProvider>
-    );
-  }
 
   if (currentPath === '/spreadsheet-viewer') {
     return (

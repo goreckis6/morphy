@@ -72,6 +72,9 @@ export const Header: React.FC = () => {
                     <a href="/convert/cr2-to-webp" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       CR2 to WebP
                     </a>
+                    <a href="/convert/dng-to-ico" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      DNG to ICO
+                    </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -101,6 +104,24 @@ export const Header: React.FC = () => {
                     <a href="/convert/csv-to-pdf" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       CSV to PDF
                     </a>
+                    <a href="/convert/csv-to-ppt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to PPT
+                    </a>
+                    <a href="/convert/csv-to-pptx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to PPTX
+                    </a>
+                    <a href="/convert/csv-to-rtf" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to RTF
+                    </a>
+                    <a href="/convert/csv-to-txt" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to TXT
+                    </a>
+                    <a href="/convert/csv-to-xls" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to XLS
+                    </a>
+                    <a href="/convert/csv-to-xlsx" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to XLSX
+                    </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Developer Tools (CSV)</div>
                     <a href="/convert/csv-to-json" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -109,14 +130,23 @@ export const Header: React.FC = () => {
                     <a href="/convert/csv-to-ndjson" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       CSV to NDJSON
                     </a>
-                    <a href="/convert/csv-to-parquet" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                    <a href="/convert/csv-to-parquet" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       CSV to Parquet
+                    </a>
+                    <a href="/convert/csv-to-sql" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to SQL
+                    </a>
+                    <a href="/convert/csv-to-toml" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to TOML
+                    </a>
+                    <a href="/convert/csv-to-xml" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      CSV to XML
+                    </a>
+                    <a href="/convert/csv-to-yaml" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                      CSV to YAML
                     </a>
                   </div>
                 </div>
-                <a href="/viewers" className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Viewers
-                </a>
                 <a href="/#supported-formats" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Formats
                 </a>
@@ -201,6 +231,9 @@ export const Header: React.FC = () => {
                     <a href="/convert/cr2-to-webp" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CR2 to WebP
                     </a>
+                    <a href="/convert/dng-to-ico" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      DNG to ICO
+                    </a>
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Document Converters</div>
                     <a href="/convert/csv-to-doc" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to DOC
@@ -229,6 +262,24 @@ export const Header: React.FC = () => {
                     <a href="/convert/csv-to-pdf" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to PDF
                     </a>
+                    <a href="/convert/csv-to-ppt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to PPT
+                    </a>
+                    <a href="/convert/csv-to-pptx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to PPTX
+                    </a>
+                    <a href="/convert/csv-to-rtf" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to RTF
+                    </a>
+                    <a href="/convert/csv-to-txt" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to TXT
+                    </a>
+                    <a href="/convert/csv-to-xls" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to XLS
+                    </a>
+                    <a href="/convert/csv-to-xlsx" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to XLSX
+                    </a>
                     <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-2">Developer Tools (CSV)</div>
                     <a href="/convert/csv-to-json" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to JSON
@@ -239,11 +290,20 @@ export const Header: React.FC = () => {
                     <a href="/convert/csv-to-parquet" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
                       CSV to Parquet
                     </a>
+                    <a href="/convert/csv-to-sql" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to SQL
+                    </a>
+                    <a href="/convert/csv-to-toml" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to TOML
+                    </a>
+                    <a href="/convert/csv-to-xml" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to XML
+                    </a>
+                    <a href="/convert/csv-to-yaml" className="block text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                      CSV to YAML
+                    </a>
                   </div>
                 </div>
-                <a href="/viewers" className="text-gray-700 hover:text-blue-600 transition-colors">
-                  Viewers
-                </a>
                 <a href="/#supported-formats" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Formats
                 </a>

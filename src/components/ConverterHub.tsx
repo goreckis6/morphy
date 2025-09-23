@@ -143,6 +143,48 @@ export const ConverterHub: React.FC = () => {
           path: "/convert/csv-to-pdf",
           inputFormat: "CSV",
           outputFormat: "PDF"
+        },
+        { 
+          name: "CSV to PPT Converter", 
+          description: "Convert CSV files to PowerPoint PPT format for presentations",
+          path: "/convert/csv-to-ppt",
+          inputFormat: "CSV",
+          outputFormat: "PPT"
+        },
+        { 
+          name: "CSV to PPTX Converter", 
+          description: "Convert CSV files to PowerPoint PPTX format for modern presentations",
+          path: "/convert/csv-to-pptx",
+          inputFormat: "CSV",
+          outputFormat: "PPTX"
+        },
+        { 
+          name: "CSV to RTF Converter", 
+          description: "Convert CSV files to Rich Text Format for cross-platform documents",
+          path: "/convert/csv-to-rtf",
+          inputFormat: "CSV",
+          outputFormat: "RTF"
+        },
+        { 
+          name: "CSV to TXT Converter", 
+          description: "Convert CSV files to plain text format for universal compatibility",
+          path: "/convert/csv-to-txt",
+          inputFormat: "CSV",
+          outputFormat: "TXT"
+        },
+        { 
+          name: "CSV to XLS Converter", 
+          description: "Convert CSV files to Excel XLS format for spreadsheet applications",
+          path: "/convert/csv-to-xls",
+          inputFormat: "CSV",
+          outputFormat: "XLS"
+        },
+        { 
+          name: "CSV to XLSX Converter", 
+          description: "Convert CSV files to Excel XLSX format for modern spreadsheets",
+          path: "/convert/csv-to-xlsx",
+          inputFormat: "CSV",
+          outputFormat: "XLSX"
         }
       ]
     },
@@ -169,6 +211,46 @@ export const ConverterHub: React.FC = () => {
           path: "/convert/csv-to-parquet",
           inputFormat: "CSV",
           outputFormat: "Parquet"
+        },
+        { 
+          name: "CSV to SQL Converter", 
+          description: "Convert CSV files to SQL format for database operations",
+          path: "/convert/csv-to-sql",
+          inputFormat: "CSV",
+          outputFormat: "SQL"
+        },
+        { 
+          name: "CSV to TOML Converter", 
+          description: "Convert CSV files to TOML format for configuration files",
+          path: "/convert/csv-to-toml",
+          inputFormat: "CSV",
+          outputFormat: "TOML"
+        },
+        { 
+          name: "CSV to XML Converter", 
+          description: "Convert CSV files to XML format for data exchange",
+          path: "/convert/csv-to-xml",
+          inputFormat: "CSV",
+          outputFormat: "XML"
+        },
+        { 
+          name: "CSV to YAML Converter", 
+          description: "Convert CSV files to YAML format for configuration and data serialization",
+          path: "/convert/csv-to-yaml",
+          inputFormat: "CSV",
+          outputFormat: "YAML"
+        }
+      ]
+    },
+    {
+      title: "IMAGE CONVERTERS (RAW)",
+      formats: [
+        { 
+          name: "DNG to ICO Converter", 
+          description: "Convert Adobe DNG raw images to ICO format for Windows icons",
+          path: "/convert/dng-to-ico",
+          inputFormat: "DNG",
+          outputFormat: "ICO"
         }
       ]
     }
