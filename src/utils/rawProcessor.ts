@@ -32,15 +32,20 @@ export class RAWProcessor {
       // Ensure process env stub for libraw.js (browser compatibility)
       const globalAny = globalThis as any;
       if (typeof globalAny.process === 'undefined') {
-        globalAny.process = { env: {}, versions: { modules: false } };
+        globalAny.process = { env: {}, versions: { node: '0.0.0', modules: '0' } };
       } else {
         if (typeof globalAny.process.env === 'undefined') {
           globalAny.process.env = {};
         }
         if (typeof globalAny.process.versions === 'undefined') {
-          globalAny.process.versions = { modules: false };
-        } else if (typeof globalAny.process.versions.modules === 'undefined') {
-          globalAny.process.versions.modules = false;
+          globalAny.process.versions = { node: '0.0.0', modules: '0' };
+        } else {
+          if (typeof globalAny.process.versions.node === 'undefined') {
+            globalAny.process.versions.node = '0.0.0';
+          }
+          if (typeof globalAny.process.versions.modules === 'undefined') {
+            globalAny.process.versions.modules = '0';
+          }
         }
       }
 

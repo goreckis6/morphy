@@ -1,42 +1,29 @@
 services:
+  # Backend service
   - type: web
-    name: morphyimg
-    env: node
+    name: morphy-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     plan: starter
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: DENY
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: Referrer-Policy
-        value: strict-origin-when-cross-origin
-      - path: /*
-        name: Cross-Origin-Embedder-Policy
-        value: require-corp
-      - path: /*
-        name: Cross-Origin-Opener-Policy
-        value: same-origin
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://morphy-1-ulvv.onrender.com
+    healthCheckPath: /health
+
+  # Frontend service
+  - type: web
+    name: morphy-frontend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://morphy-backend.onrender.com
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
-    envVars:
-      - key: NODE_VERSION
-        value: 18
-      - key: VITE_SUPABASE_URL
-        fromDatabase:
-          name: morphyimg-db
-          property: connectionString
-      - key: VITE_SUPABASE_ANON_KEY
-        sync: false
-
-databases:
-  - name: morphyimg-db
-    databaseName: morphyimg
-    user: morphyimg_user
-    plan: starter
