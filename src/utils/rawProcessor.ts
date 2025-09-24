@@ -29,6 +29,14 @@ export class RAWProcessor {
     
     this.librawLoading = true;
     try {
+      // Ensure process env stub for libraw.js (browser compatibility)
+      const globalAny = globalThis as any;
+      if (typeof globalAny.process === 'undefined') {
+        globalAny.process = { env: {} };
+      } else if (typeof globalAny.process.env === 'undefined') {
+        globalAny.process.env = {};
+      }
+
       // Dynamically import libraw.js
       const LibRaw = await import('libraw.js');
       this.librawModule = await LibRaw.default();
