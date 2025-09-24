@@ -75,13 +75,34 @@ export const CSVToAVROConverter: React.FC = () => {
       originalFile: file.name
     };
     
-    // Convert to a more realistic AVRO-like format
+    // Simulate different compression effects
+    let compressionInfo = '';
+    let additionalData = '';
+    
+    switch (compression) {
+      case 'deflate':
+        compressionInfo = 'DEFLATE_COMPRESSED';
+        additionalData = 'Compression ratio: ~60% (Good balance of speed and compression)';
+        break;
+      case 'snappy':
+        compressionInfo = 'SNAPPY_COMPRESSED';
+        additionalData = 'Compression ratio: ~40% (Fast compression, moderate size reduction)';
+        break;
+      case 'bzip2':
+        compressionInfo = 'BZIP2_COMPRESSED';
+        additionalData = 'Compression ratio: ~80% (High compression, slower processing)';
+        break;
+    }
+    
+    // Convert to a more realistic AVRO-like format with compression simulation
     const avroContent = `AVRO_FILE_START
 SCHEMA: ${JSON.stringify(mockAvroData.schema)}
 DATA: ${JSON.stringify(mockAvroData.data)}
-COMPRESSION: ${mockAvroData.compression}
-HEADERS: ${mockAvroData.includeHeaders}
-ORIGINAL: ${mockAvroData.originalFile}
+COMPRESSION_TYPE: ${compressionInfo}
+COMPRESSION_DETAILS: ${additionalData}
+HEADERS_INCLUDED: ${mockAvroData.includeHeaders}
+ORIGINAL_FILE: ${mockAvroData.originalFile}
+FILE_SIZE_INFO: Original CSV size simulated, AVRO with ${compression} compression applied
 AVRO_FILE_END`;
     
     return new Blob([avroContent], { type: 'application/avro' });
