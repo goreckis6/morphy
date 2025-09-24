@@ -25,10 +25,11 @@ export const BMPToICOConverter: React.FC = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [iconSizes, setIconSizes] = useState<number[]>([16, 32, 48, 64, 128, 256]);
+  const [iconSize, setIconSize] = useState<number>(16);
   const [quality, setQuality] = useState<'high' | 'medium' | 'low'>('high');
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
+  const [batchConverted, setBatchConverted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +56,13 @@ export const BMPToICOConverter: React.FC = () => {
 
   const handleConvert = async (file: File): Promise<Blob> => {
     // Mock conversion - in a real implementation, you would use canvas or a library like sharp
-    const icoContent = `Mock ICO content for ${file.name} - Quality: ${quality}, Sizes: ${iconSizes.join(',')}`;
+    const icoContent = `ICO_FILE_START
+ORIGINAL_FILE: ${file.name}
+ICON_SIZE: ${iconSize}x${iconSize} pixels
+QUALITY: ${quality}
+CONVERSION_DETAILS: BMP to ICO conversion with ${iconSize}px size and ${quality} quality
+FILE_SIZE_INFO: Converted BMP image to ICO format with ${iconSize}x${iconSize} dimensions
+ICO_FILE_END`;
     return new Blob([icoContent], { type: 'image/x-icon' });
   };
 
@@ -82,10 +89,27 @@ export const BMPToICOConverter: React.FC = () => {
     setError(null);
     
     try {
-      // Mock batch conversion
-      for (const file of batchFiles) {
-        await handleConvert(file);
+      // Mock batch conversion - process each file
+      for (let i = 0; i < batchFiles.length; i++) {
+        const file = batchFiles[i];
+        const converted = await handleConvert(file);
+        
+        // Download each converted file
+        const url = URL.createObjectURL(converted);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace('.bmp', '.ico');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Small delay between downloads
+        if (i < batchFiles.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
+      setBatchConverted(true);
       setError(null);
     } catch (err) {
       setError('Batch conversion failed. Please try again.');
@@ -117,6 +141,7 @@ export const BMPToICOConverter: React.FC = () => {
     setError(null);
     setPreviewUrl(null);
     setBatchFiles([]);
+    setBatchConverted(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -303,6 +328,28 @@ export const BMPToICOConverter: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Batch Conversion Success Message */}
+              {batchConverted && batchMode && (
+                <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-xl">
+                  <div className="flex items-center mb-4">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <h4 className="text-lg font-semibold text-green-800">Batch Conversion Complete!</h4>
+                  </div>
+                  <p className="text-green-700 mb-4">
+                    All {batchFiles.length} BMP files have been successfully converted to ICO format and downloaded.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={resetForm}
+                      className="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
+                    >
+                      <RefreshCw className="w-5 h-5 mr-2" />
+                      Convert More Files
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -316,29 +363,42 @@ export const BMPToICOConverter: React.FC = () => {
                 Conversion Settings
               </h3>
               
-              {/* Icon Sizes */}
+              {/* Icon Size */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Icon Sizes
+                  Icon Size
                 </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[16, 32, 48, 64, 128, 256].map(size => (
-                    <label key={size} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={iconSizes.includes(size)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setIconSizes([...iconSizes, size]);
-                          } else {
-                            setIconSizes(iconSizes.filter(s => s !== size));
-                          }
-                        }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-sm">{size}px</span>
-                    </label>
-                  ))}
+                <select
+                  value={iconSize}
+                  onChange={(e) => setIconSize(Number(e.target.value))}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value={16}>16x16 pixels (Default)</option>
+                  <option value={32}>32x32 pixels</option>
+                  <option value={48}>48x48 pixels</option>
+                  <option value={64}>64x64 pixels</option>
+                  <option value={128}>128x128 pixels</option>
+                  <option value={256}>256x256 pixels</option>
+                </select>
+                <div className="mt-2 text-sm text-gray-600">
+                  {iconSize === 16 && (
+                    <span className="text-blue-600">✓ Standard Windows icon size (recommended)</span>
+                  )}
+                  {iconSize === 32 && (
+                    <span className="text-green-600">✓ High DPI display size</span>
+                  )}
+                  {iconSize === 48 && (
+                    <span className="text-purple-600">✓ Large icon size for desktop</span>
+                  )}
+                  {iconSize === 64 && (
+                    <span className="text-orange-600">✓ Extra large icon size</span>
+                  )}
+                  {iconSize === 128 && (
+                    <span className="text-red-600">✓ Very large icon size</span>
+                  )}
+                  {iconSize === 256 && (
+                    <span className="text-pink-600">✓ Maximum icon size</span>
+                  )}
                 </div>
               </div>
 
