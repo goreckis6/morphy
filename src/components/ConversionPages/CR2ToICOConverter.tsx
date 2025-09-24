@@ -31,7 +31,7 @@ export const CR2ToICOConverter: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<{url: string, width: number, height: number} | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.name.toLowerCase().endsWith('.cr2')) {
@@ -39,12 +39,71 @@ export const CR2ToICOConverter: React.FC = () => {
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
         
-        // CR2 files can't be directly previewed in browser, so we show file info
-        setImagePreview({
-          url: URL.createObjectURL(file),
-          width: 0, // Unknown for CR2 files
-          height: 0 // Unknown for CR2 files
-        });
+        // Try to extract JPEG preview for actual preview
+        try {
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const arrayBuffer = e.target?.result as ArrayBuffer;
+              const uint8Array = new Uint8Array(arrayBuffer);
+              
+              // Look for embedded JPEG thumbnail
+              const jpegStart = findJPEGStart(uint8Array);
+              const jpegEnd = findJPEGEnd(uint8Array, jpegStart);
+              
+              if (jpegStart !== -1 && jpegEnd !== -1) {
+                // Extract the JPEG preview
+                const jpegData = uint8Array.slice(jpegStart, jpegEnd + 2);
+                const jpegBlob = new Blob([jpegData], { type: 'image/jpeg' });
+                const jpegUrl = URL.createObjectURL(jpegBlob);
+                
+                // Create image to get dimensions
+                const img = new Image();
+                img.onload = () => {
+                  setImagePreview({
+                    url: jpegUrl,
+                    width: img.width,
+                    height: img.height
+                  });
+                  // Update preview URL to show actual extracted image
+                  setPreviewUrl(jpegUrl);
+                };
+                img.onerror = () => {
+                  // Fallback to file info only
+                  setImagePreview({
+                    url: URL.createObjectURL(file),
+                    width: 0,
+                    height: 0
+                  });
+                  URL.revokeObjectURL(jpegUrl);
+                };
+                img.src = jpegUrl;
+              } else {
+                // No JPEG preview found, show file info only
+                setImagePreview({
+                  url: URL.createObjectURL(file),
+                  width: 0,
+                  height: 0
+                });
+              }
+            } catch (error) {
+              // Error reading file, show basic info
+              setImagePreview({
+                url: URL.createObjectURL(file),
+                width: 0,
+                height: 0
+              });
+            }
+          };
+          reader.readAsArrayBuffer(file);
+        } catch (error) {
+          // Error processing file, show basic info
+          setImagePreview({
+            url: URL.createObjectURL(file),
+            width: 0,
+            height: 0
+          });
+        }
       } else {
         setError('Please select a valid CR2 file');
       }
@@ -291,6 +350,14 @@ ICO_FILE_END`;
   };
 
   const resetForm = () => {
+    // Clean up any blob URLs to prevent memory leaks
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    if (imagePreview?.url && imagePreview.url !== previewUrl) {
+      URL.revokeObjectURL(imagePreview.url);
+    }
+    
     setSelectedFile(null);
     setConvertedFile(null);
     setError(null);
@@ -398,14 +465,52 @@ ICO_FILE_END`;
               {/* File Preview */}
               {previewUrl && !batchMode && (
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-4">Preview</h4>
+                  <h4 className="text-lg font-semibold mb-4">
+                    {imagePreview && imagePreview.width > 0 ? 'CR2 Image Preview' : 'CR2 File Info'}
+                  </h4>
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center justify-center h-32 bg-gray-100 rounded">
-                      <Camera className="w-12 h-12 text-gray-400" />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center">
-                      {selectedFile?.name} ({(selectedFile?.size || 0) / 1024} KB)
-                    </p>
+                    {imagePreview && imagePreview.width > 0 ? (
+                      // Show actual extracted JPEG preview
+                      <div>
+                        <img 
+                          src={previewUrl} 
+                          alt="CR2 Preview" 
+                          className="max-w-full h-32 object-contain mx-auto rounded"
+                        />
+                        <div className="mt-3 text-center">
+                          <p className="text-sm text-gray-600">
+                            <strong>{selectedFile?.name}</strong> ({Math.round((selectedFile?.size || 0) / 1024)} KB)
+                          </p>
+                          <div className="mt-2 text-sm text-gray-500">
+                            <p>Extracted preview: {imagePreview.width} × {imagePreview.height} pixels</p>
+                            <p className="text-orange-600 font-medium">
+                              Will convert to: {iconSize} × {iconSize} pixels ({quality} quality)
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      // Show camera icon when no preview available
+                      <div>
+                        <div className="flex items-center justify-center h-32 bg-gray-100 rounded">
+                          <Camera className="w-12 h-12 text-gray-400" />
+                        </div>
+                        <div className="mt-3 text-center">
+                          <p className="text-sm text-gray-600">
+                            <strong>{selectedFile?.name}</strong> ({Math.round((selectedFile?.size || 0) / 1024)} KB)
+                          </p>
+                          <div className="mt-2 text-sm text-gray-500">
+                            <p>Canon RAW (CR2) camera file</p>
+                            <p className="text-orange-600 font-medium">
+                              Will convert to: {iconSize} × {iconSize} pixels ({quality} quality)
+                            </p>
+                            <p className="text-gray-400 text-xs mt-1">
+                              No embedded preview found - will generate sample icon
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
