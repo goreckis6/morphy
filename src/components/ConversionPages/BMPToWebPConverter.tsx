@@ -88,18 +88,8 @@ export const BMPToWebPConverter: React.FC = () => {
           const qualityValue = quality === 'high' ? 0.9 : quality === 'medium' ? 0.7 : 0.5;
           canvas.toBlob((blob) => {
             if (blob) {
-              // Create WebP content with actual image data
-              const webpContent = `WEBP_FILE_START
-ORIGINAL_FILE: ${file.name}
-ORIGINAL_SIZE: ${img.width}x${img.height} pixels
-QUALITY: ${quality} (${qualityValue})
-LOSSLESS: ${lossless}
-CONVERSION_DETAILS: BMP to WebP conversion with ${quality} quality and ${lossless ? 'lossless' : 'lossy'} compression
-IMAGE_DATA: Canvas converted image data (${canvas.width}x${canvas.height})
-FILE_SIZE_INFO: Converted BMP image to WebP format with ${quality} quality
-WEBP_FILE_END`;
-              
-              resolve(new Blob([webpContent], { type: 'image/webp' }));
+              // Return the actual WebP blob (real image file)
+              resolve(blob);
             } else {
               reject(new Error('Failed to convert image'));
             }
