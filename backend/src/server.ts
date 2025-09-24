@@ -7,12 +7,49 @@ import sharp from 'sharp';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import os from 'os';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const execFileAsync = promisify(execFile);
+
+const RAW_EXTENSIONS = new Set([
+  'cr2','cr3','crw','nef','arw','dng','rw2','pef','orf','raf','x3f','raw','sr2','nrw','k25','kdc','dcr'
+]);
+
+const isRawFile = (file: Express.Multer.File) => {
+  const ext = path.extname(file.originalname).replace('.', '').toLowerCase();
+  return RAW_EXTENSIONS.has(ext) || file.mimetype.toLowerCase().includes('x-') || file.mimetype.toLowerCase().includes('raw');
+};
+
+const prepareInputBuffer = async (file: Express.Multer.File): Promise<Buffer> => {
+  if (!isRawFile(file)) {
+    return file.buffer;
+  }
+
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'morphy-'));
+  const inputPath = path.join(tmpDir, `source${path.extname(file.originalname) || '.raw'}`);
+  const outputPath = path.join(tmpDir, 'converted.tiff');
+
+  try {
+    await fs.writeFile(inputPath, file.buffer);
+
+    await execFileAsync('dcraw', ['-T', '-6', '-O', outputPath, inputPath]);
+
+    const outputBuffer = await fs.readFile(outputPath);
+    return outputBuffer;
+  } catch (error) {
+    console.error('RAW conversion via dcraw failed:', error);
+    throw new Error('Failed to process RAW file');
+  } finally {
+    await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => undefined);
+  }
+};
 
 // Security middleware
 app.use(helmet());
@@ -82,11 +119,13 @@ app.post('/api/convert', upload.single('file'), async (req, res) => {
 
     console.log(`Processing file: ${file.originalname}, size: ${file.size} bytes`);
 
+    const inputBuffer = await prepareInputBuffer(file);
+
     // Parse quality value
     const qualityValue = quality === 'high' ? 95 : quality === 'medium' ? 80 : 60;
     const isLossless = lossless === 'true';
 
-    let sharpInstance = sharp(file.buffer, { 
+    let sharpInstance = sharp(inputBuffer, { 
       failOn: 'truncated',
       unlimited: true // Allow very large images
     });
@@ -230,10 +269,16 @@ app.post('/api/convert/batch', upload.array('files', 10), async (req, res) => {
 
         switch (format.toLowerCase()) {
           case 'webp':
-            outputBuffer = await sharpInstance.webp({ 
+        {
+          const inputBuffer = await prepareInputBuffer(file);
+          outputBuffer = await sharp(inputBuffer, {
+            failOn: 'truncated',
+            unlimited: true
+          }).webp({ 
               quality: Number(qualityValue), 
               lossless: isLossless 
             }).toBuffer();
+        }
             fileExtension = 'webp';
             break;
           case 'png':
