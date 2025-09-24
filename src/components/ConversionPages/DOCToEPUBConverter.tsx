@@ -13,7 +13,7 @@ import {
   Shield,
   Clock,
   Star,
-  Book,
+  File,
   BarChart3
 } from 'lucide-react';
 
@@ -219,7 +219,7 @@ export const DOCToEPUBConverter: React.FC = () => {
                   <h4 className="text-lg font-semibold mb-4">Preview</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center justify-center h-32 bg-gray-100 rounded">
-                      <Book className="w-12 h-12 text-gray-400" />
+                      <File className="w-12 h-12 text-gray-400" />
                     </div>
                     <p className="text-sm text-gray-600 mt-2 text-center">
                       {selectedFile?.name} ({(selectedFile?.size || 0) / 1024} KB)

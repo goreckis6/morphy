@@ -13,7 +13,7 @@ import {
   Shield,
   Clock,
   Star,
-  Vector,
+  File,
   BarChart3
 } from 'lucide-react';
 
