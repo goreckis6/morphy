@@ -73,8 +73,8 @@ export const CR2ToICOConverter: React.FC = () => {
             
             // Look for embedded JPEG thumbnail in CR2 file
             // CR2 files often contain JPEG previews that we can extract
-            const jpegStart = this.findJPEGStart(uint8Array);
-            const jpegEnd = this.findJPEGEnd(uint8Array, jpegStart);
+            const jpegStart = findJPEGStart(uint8Array);
+            const jpegEnd = findJPEGEnd(uint8Array, jpegStart);
             
             if (jpegStart !== -1 && jpegEnd !== -1) {
               // Extract the JPEG preview
@@ -115,32 +115,32 @@ export const CR2ToICOConverter: React.FC = () => {
               img.onerror = () => {
                 URL.revokeObjectURL(jpegUrl);
                 // Fallback to generated sample if extraction fails
-                this.generateSampleICO(file, resolve);
+                generateSampleICO(file, resolve);
               };
               
               img.src = jpegUrl;
             } else {
               // No JPEG preview found, generate sample
-              this.generateSampleICO(file, resolve);
+              generateSampleICO(file, resolve);
             }
           } catch (error) {
             // Fallback to sample generation
-            this.generateSampleICO(file, resolve);
+            generateSampleICO(file, resolve);
           }
         };
         
         reader.onerror = () => {
-          this.generateSampleICO(file, resolve);
+          generateSampleICO(file, resolve);
         };
         
         reader.readAsArrayBuffer(file);
       } catch (error) {
-        this.generateSampleICO(file, resolve);
+        generateSampleICO(file, resolve);
       }
     });
   };
 
-  private findJPEGStart = (data: Uint8Array): number => {
+  const findJPEGStart = (data: Uint8Array): number => {
     // Look for JPEG SOI marker (0xFF 0xD8)
     for (let i = 0; i < data.length - 1; i++) {
       if (data[i] === 0xFF && data[i + 1] === 0xD8) {
@@ -150,7 +150,7 @@ export const CR2ToICOConverter: React.FC = () => {
     return -1;
   };
 
-  private findJPEGEnd = (data: Uint8Array, start: number): number => {
+  const findJPEGEnd = (data: Uint8Array, start: number): number => {
     // Look for JPEG EOI marker (0xFF 0xD9)
     for (let i = start + 2; i < data.length - 1; i++) {
       if (data[i] === 0xFF && data[i + 1] === 0xD9) {
@@ -160,7 +160,7 @@ export const CR2ToICOConverter: React.FC = () => {
     return -1;
   };
 
-  private generateSampleICO = (file: File, resolve: (blob: Blob) => void): void => {
+  const generateSampleICO = (file: File, resolve: (blob: Blob) => void): void => {
     // Fallback: Generate a high-quality sample ICO
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
