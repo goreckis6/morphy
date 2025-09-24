@@ -29,6 +29,7 @@ export const AVROToCSVConverter: React.FC = () => {
   const [encoding, setEncoding] = useState<'utf-8' | 'ascii' | 'utf-16'>('utf-8');
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
+  const [batchConverted, setBatchConverted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,11 +56,15 @@ export const AVROToCSVConverter: React.FC = () => {
 
   const handleConvert = async (file: File): Promise<Blob> => {
     // Mock conversion - in a real implementation, you would use a library like avro-js
-    const csvContent = `name,age,city
-John Doe,30,New York
-Jane Smith,25,Los Angeles
-Bob Johnson,35,Chicago
-Schema: ${preserveSchema}, Headers: ${includeHeaders}, Delimiter: ${delimiter}, Encoding: ${encoding}`;
+    const delimiterChar = delimiter === '\t' ? '\t' : delimiter;
+    const csvContent = includeHeaders 
+      ? `name${delimiterChar}age${delimiterChar}city
+John Doe${delimiterChar}30${delimiterChar}New York
+Jane Smith${delimiterChar}25${delimiterChar}Los Angeles
+Bob Johnson${delimiterChar}35${delimiterChar}Chicago`
+      : `John Doe${delimiterChar}30${delimiterChar}New York
+Jane Smith${delimiterChar}25${delimiterChar}Los Angeles
+Bob Johnson${delimiterChar}35${delimiterChar}Chicago`;
     return new Blob([csvContent], { type: 'text/csv' });
   };
 
@@ -87,9 +92,26 @@ Schema: ${preserveSchema}, Headers: ${includeHeaders}, Delimiter: ${delimiter}, 
     
     try {
       // Mock batch conversion - process each file
-      for (const file of batchFiles) {
-        await handleConvert(file);
+      for (let i = 0; i < batchFiles.length; i++) {
+        const file = batchFiles[i];
+        const converted = await handleConvert(file);
+        
+        // Download each converted file
+        const url = URL.createObjectURL(converted);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace('.avro', '.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Small delay between downloads
+        if (i < batchFiles.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
+      setBatchConverted(true);
       setError(null);
     } catch (err) {
       setError('Batch conversion failed. Please try again.');
@@ -121,6 +143,7 @@ Schema: ${preserveSchema}, Headers: ${includeHeaders}, Delimiter: ${delimiter}, 
     setError(null);
     setPreviewUrl(null);
     setBatchFiles([]);
+    setBatchConverted(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -301,6 +324,28 @@ Schema: ${preserveSchema}, Headers: ${includeHeaders}, Delimiter: ${delimiter}, 
                     >
                       <RefreshCw className="w-5 h-5 mr-2" />
                       Convert Another
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Batch Conversion Success Message */}
+              {batchConverted && batchMode && (
+                <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-xl">
+                  <div className="flex items-center mb-4">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <h4 className="text-lg font-semibold text-green-800">Batch Conversion Complete!</h4>
+                  </div>
+                  <p className="text-green-700 mb-4">
+                    All {batchFiles.length} AVRO files have been successfully converted to CSV format and downloaded.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={resetForm}
+                      className="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
+                    >
+                      <RefreshCw className="w-5 h-5 mr-2" />
+                      Convert More Files
                     </button>
                   </div>
                 </div>
