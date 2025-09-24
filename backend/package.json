@@ -1,29 +1,30 @@
 {
   "name": "morphy-backend",
   "version": "1.0.0",
-  "description": "Backend API for Morphy file conversion service",
-  "main": "dist/server.js",
+  "description": "RAW-aware conversion API for Morphy",
   "type": "module",
+  "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "dev": "node --watch src/server.js",
+    "build": "npm run clean && tsc",
     "start": "node dist/server.js",
-    "start:dev": "tsx src/server.ts"
+    "clean": "rimraf dist"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1",
-    "sharp": "^0.33.0",
     "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
-    "express-rate-limit": "^7.1.5"
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.3"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/multer": "^1.4.11",
     "@types/cors": "^2.8.17",
-    "@types/node": "^20.10.0",
-    "tsx": "^4.6.0",
-    "typescript": "^5.3.0"
+    "@types/express": "^4.17.21",
+    "@types/express-rate-limit": "^6.0.2",
+    "@types/multer": "^1.4.11",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.6.3"
   }
 }
+

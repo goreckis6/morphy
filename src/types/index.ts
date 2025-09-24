@@ -1,10 +1,31 @@
-// Database types temporarily disabled
-// These will be re-enabled when database is needed
-
 export interface User {
   id: string;
   email: string;
   username: string;
+  created_at: string;
+  is_active: boolean;
+}
+
+export interface UserActivity {
+  id: string;
+  user_id: string;
+  activity_type: string;
+  input_format: string;
+  output_format: string;
+  file_size: number;
+  success: boolean;
+  timestamp: string;
+}
+
+export interface SharedFile {
+  id: string;
+  file_id: string;
+  user_id: string;
+  original_filename: string;
+  file_type: string;
+  file_size: number;
+  expires_at: string;
+  created_at: string;
 }
 
 export interface FileConversionJob {

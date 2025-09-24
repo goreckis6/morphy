@@ -20,9 +20,4 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
-    'process.env': JSON.stringify({}),
-    'process': JSON.stringify({ env: {} })
-  }
 });

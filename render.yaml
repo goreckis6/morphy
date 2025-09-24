@@ -1,11 +1,10 @@
 services:
-  # Backend service
   - type: web
     name: morphy-backend
     env: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
     plan: starter
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     envVars:
       - key: NODE_ENV
         value: production
@@ -13,17 +12,13 @@ services:
         value: https://morphy-1-ulvv.onrender.com
     healthCheckPath: /health
 
-  # Frontend service
   - type: web
     name: morphy-frontend
     env: docker
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
     plan: starter
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://morphy-backend.onrender.com
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+        value: https://morphy-2-n2tb.onrender.com
+ 
