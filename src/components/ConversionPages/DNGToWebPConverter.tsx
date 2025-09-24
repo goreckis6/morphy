@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Header } from '../Header';
 import { 
   Upload, 
@@ -16,7 +16,26 @@ import {
   Camera,
   BarChart3
 } from 'lucide-react';
-import { RAWProcessor } from '../../utils/rawProcessor';
+
+const RAW_MIME_TYPES = [
+  'image/x-dng',
+  'image/x-canon-cr2',
+  'image/x-nikon-nef',
+  'image/x-sony-arw',
+  'image/x-panasonic-rw2',
+  'image/x-pentax-pef',
+  'image/x-olympus-orf',
+  'image/x-sigma-x3f',
+  'image/x-fujifilm-raf',
+  'image/x-adobe-dng'
+];
+
+const RAW_EXTENSIONS = ['dng','cr2','cr3','nef','arw','rw2','pef','orf','raf','x3f'];
+
+const isRAWFile = (file: File) => {
+  const ext = file.name.split('.').pop()?.toLowerCase();
+  return RAW_EXTENSIONS.includes(ext || '') || RAW_MIME_TYPES.includes(file.type);
+};
 
 export const DNGToWebPConverter: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -31,23 +50,35 @@ export const DNGToWebPConverter: React.FC = () => {
   const [batchConverted, setBatchConverted] = useState(false);
   const [imagePreview, setImagePreview] = useState<{url: string, width: number, height: number} | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [rawReady, setRawReady] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await RAWProcessor.initializeProcessor();
-        setRawReady(true);
-      } catch (error) {
-        console.warn('Failed to initialize RAW processor:', error);
-      }
-    })();
-  }, []);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
+
+  const convertFileBackend = async (
+    file: File,
+    settings: { quality: string; lossless: boolean }
+  ): Promise<Blob> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('quality', settings.quality);
+    formData.append('lossless', settings.lossless ? 'true' : 'false');
+
+    const response = await fetch(`${API_BASE_URL}/convert`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Conversion failed' }));
+      throw new Error(error.error || 'Conversion failed');
+    }
+
+    return await response.blob();
+  };
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (RAWProcessor.isRAWFormat(file.name) || RAWProcessor.isHEICFormat(file.name) || file.type.startsWith('image/')) {
+      if (isRAWFile(file) || file.type.startsWith('image/')) {
         setSelectedFile(file);
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
@@ -64,34 +95,13 @@ export const DNGToWebPConverter: React.FC = () => {
           setPreviewUrl(directUrl);
         };
         
-        img.onerror = async () => {
+        img.onerror = () => {
           URL.revokeObjectURL(directUrl);
-          try {
-            if (RAWProcessor.isRAWFormat(file.name) || RAWProcessor.isHEICFormat(file.name)) {
-              const previewUrl = await RAWProcessor.createRAWPreview(file);
-              if (previewUrl) {
-                setImagePreview({
-                  url: previewUrl,
-                  width: 0,
-                  height: 0
-                });
-                setPreviewUrl(previewUrl);
-                return;
-              }
-            }
-            setImagePreview({
-              url: URL.createObjectURL(file),
-              width: 0,
-              height: 0
-            });
-          } catch (error) {
-            console.warn('RAW preview generation failed:', error);
-            setImagePreview({
-              url: URL.createObjectURL(file),
-              width: 0,
-              height: 0
-            });
-          }
+          setImagePreview({
+            url: URL.createObjectURL(file),
+            width: 0,
+            height: 0
+          });
         };
         
         img.src = directUrl;
@@ -104,30 +114,17 @@ export const DNGToWebPConverter: React.FC = () => {
   const handleBatchFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     const imageFiles = files.filter(file => 
-      RAWProcessor.isRAWFormat(file.name) || RAWProcessor.isHEICFormat(file.name) || file.type.startsWith('image/')
+      isRAWFile(file) || file.type.startsWith('image/')
     );
     setBatchFiles(imageFiles);
     setError(null);
   };
 
   const handleConvert = async (file: File): Promise<Blob> => {
-    if (!rawReady) {
-      await RAWProcessor.initializeProcessor();
-      setRawReady(true);
-    }
-
-    const result = await RAWProcessor.convertToWebP(file, {
-      quality: quality === 'high' ? 0.95 : quality === 'medium' ? 0.8 : 0.6,
-      lossless,
-      maxWidth: 4096,
-      maxHeight: 4096
+    return await convertFileBackend(file, {
+      quality,
+      lossless
     });
-
-    if (!result) {
-      throw new Error('Unable to convert file. The file may be corrupted or unsupported.');
-    }
-
-    return result;
   };
 
   const handleSingleConvert = async () => {
@@ -418,7 +415,7 @@ export const DNGToWebPConverter: React.FC = () => {
               <div className="mt-8">
                 <button
                   onClick={batchMode ? handleBatchConvert : handleSingleConvert}
-                  disabled={isConverting || (batchMode ? batchFiles.length === 0 : !selectedFile) || !rawReady}
+                  disabled={isConverting || (batchMode ? batchFiles.length === 0 : !selectedFile)}
                   className="w-full bg-gradient-to-r from-amber-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-amber-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
                 >
                   {isConverting ? (
@@ -429,7 +426,7 @@ export const DNGToWebPConverter: React.FC = () => {
                   ) : (
                     <div className="flex items-center justify-center">
                       <Zap className="w-5 h-5 mr-2" />
-                      {rawReady ? (batchMode ? `Convert ${batchFiles.length} Files` : 'Convert to WebP') : 'Initializing RAW Engine...'}
+                      {batchMode ? `Convert ${batchFiles.length} Files` : 'Convert to WebP'}
                     </div>
                   )}
                 </button>
