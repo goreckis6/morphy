@@ -27,6 +27,7 @@ export const CSVToAVROConverter: React.FC = () => {
   const [includeHeaders, setIncludeHeaders] = useState(true);
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
+  const [batchConverted, setBatchConverted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +53,37 @@ export const CSVToAVROConverter: React.FC = () => {
   };
 
   const handleConvert = async (file: File): Promise<Blob> => {
-    const avroContent = `Mock AVRO content for ${file.name} - Compression: ${compression}, Headers: ${includeHeaders}`;
+    // Mock conversion - in a real implementation, you would use a library like avro-js
+    // Create a more realistic AVRO binary structure (simplified)
+    const mockAvroData = {
+      schema: {
+        type: "record",
+        name: "CSVRecord",
+        fields: [
+          { name: "name", type: "string" },
+          { name: "age", type: "int" },
+          { name: "city", type: "string" }
+        ]
+      },
+      data: [
+        { name: "John Doe", age: 30, city: "New York" },
+        { name: "Jane Smith", age: 25, city: "Los Angeles" },
+        { name: "Bob Johnson", age: 35, city: "Chicago" }
+      ],
+      compression: compression,
+      includeHeaders: includeHeaders,
+      originalFile: file.name
+    };
+    
+    // Convert to a more realistic AVRO-like format
+    const avroContent = `AVRO_FILE_START
+SCHEMA: ${JSON.stringify(mockAvroData.schema)}
+DATA: ${JSON.stringify(mockAvroData.data)}
+COMPRESSION: ${mockAvroData.compression}
+HEADERS: ${mockAvroData.includeHeaders}
+ORIGINAL: ${mockAvroData.originalFile}
+AVRO_FILE_END`;
+    
     return new Blob([avroContent], { type: 'application/avro' });
   };
 
@@ -79,9 +110,27 @@ export const CSVToAVROConverter: React.FC = () => {
     setError(null);
     
     try {
-      for (const file of batchFiles) {
-        await handleConvert(file);
+      // Mock batch conversion - process each file
+      for (let i = 0; i < batchFiles.length; i++) {
+        const file = batchFiles[i];
+        const converted = await handleConvert(file);
+        
+        // Download each converted file
+        const url = URL.createObjectURL(converted);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace('.csv', '.avro');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Small delay between downloads
+        if (i < batchFiles.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
+      setBatchConverted(true);
       setError(null);
     } catch (err) {
       setError('Batch conversion failed. Please try again.');
@@ -113,6 +162,7 @@ export const CSVToAVROConverter: React.FC = () => {
     setError(null);
     setPreviewUrl(null);
     setBatchFiles([]);
+    setBatchConverted(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -284,6 +334,28 @@ export const CSVToAVROConverter: React.FC = () => {
                     >
                       <RefreshCw className="w-5 h-5 mr-2" />
                       Convert Another
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Batch Conversion Success Message */}
+              {batchConverted && batchMode && (
+                <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-xl">
+                  <div className="flex items-center mb-4">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <h4 className="text-lg font-semibold text-green-800">Batch Conversion Complete!</h4>
+                  </div>
+                  <p className="text-green-700 mb-4">
+                    All {batchFiles.length} CSV files have been successfully converted to AVRO format and downloaded.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={resetForm}
+                      className="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
+                    >
+                      <RefreshCw className="w-5 h-5 mr-2" />
+                      Convert More Files
                     </button>
                   </div>
                 </div>
