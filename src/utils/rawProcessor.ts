@@ -1,3 +1,10 @@
+export interface RawConversionOptions {
+  quality?: number;
+  lossless?: boolean;
+  maxWidth?: number;
+  maxHeight?: number;
+}
+
 export class RAWProcessor {
   private static isInitialized = false;
   private static librawModule: any = null;
@@ -35,11 +42,158 @@ export class RAWProcessor {
     }
   }
 
+  private static async processWithLibRaw(data: Uint8Array, filename: string, options: RawConversionOptions): Promise<Blob | null> {
+    if (!this.librawModule) {
+      await this.initializeLibRaw();
+    }
+
+    if (!this.librawModule) {
+      return null;
+    }
+
+    const fileName = '/tmp/' + filename;
+    try {
+      this.librawModule.FS.writeFile(fileName, data);
+      const processor = new this.librawModule.LibRaw();
+      const openResult = processor.open_file(fileName);
+      if (openResult !== 0) {
+        processor.recycle();
+        return null;
+      }
+
+      const unpackResult = processor.unpack();
+      if (unpackResult !== 0) {
+        processor.recycle();
+        return null;
+      }
+
+      const params = processor.imgdata.params;
+      params.half_size = 1;
+      params.output_color = this.librawModule.LibRaw_constants.LIBRAW_COLORSPACE_SRGB;
+      params.output_bps = 8;
+      params.use_camera_wb = 1;
+      params.no_auto_bright = 1;
+      params.user_qual = options.lossless ? 3 : 2;
+
+      processor.dcraw_process();
+      const imageData = processor.dcraw_make_mem_image();
+      if (!imageData || !imageData.data) {
+        processor.recycle();
+        return null;
+      }
+
+      const width = Math.min(imageData.width, options.maxWidth ?? imageData.width);
+      const height = Math.min(imageData.height, options.maxHeight ?? imageData.height);
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        processor.recycle();
+        return null;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const imgData = ctx.createImageData(width, height);
+      const scaleX = imageData.width / width;
+      const scaleY = imageData.height / height;
+
+      const srcData = imageData.data;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const srcX = Math.floor(x * scaleX);
+          const srcY = Math.floor(y * scaleY);
+          const srcIndex = (srcY * imageData.width + srcX) * 3;
+          const dstIndex = (y * width + x) * 4;
+
+          imgData.data[dstIndex] = srcData[srcIndex];
+          imgData.data[dstIndex + 1] = srcData[srcIndex + 1];
+          imgData.data[dstIndex + 2] = srcData[srcIndex + 2];
+          imgData.data[dstIndex + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+
+      processor.recycle();
+
+      return await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/webp', options.lossless ? 1.0 : (options.quality ?? 0.9));
+      });
+    } catch (error) {
+      console.error('LibRaw processing error:', error);
+      return null;
+    } finally {
+      try {
+        this.librawModule.FS.unlink(fileName);
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
+
   // Ensure we pass ArrayBuffer to Blob for strict TS compatibility
   private static toArrayBuffer(view: Uint8Array): ArrayBuffer {
     const copy = new Uint8Array(view.byteLength);
     copy.set(view);
     return copy.buffer;
+  }
+
+  static async convertToWebP(file: File, options: RawConversionOptions = {}): Promise<Blob | null> {
+    await this.initializeProcessor();
+
+    const quality = options.quality ?? 0.9;
+    const lossless = options.lossless ?? false;
+    const maxWidth = options.maxWidth ?? 4000;
+    const maxHeight = options.maxHeight ?? 4000;
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      // Use LibRaw if available
+      if (this.librawModule) {
+        try {
+          const result = await this.processWithLibRaw(uint8Array, file.name, {
+            quality,
+            lossless,
+            maxWidth,
+            maxHeight
+          });
+          if (result) {
+            return result;
+          }
+        } catch (error) {
+          console.warn('LibRaw conversion failed:', error);
+        }
+      }
+
+      // Fallback: attempt to use embedded JPEG
+      const jpegData = await this.findBestJPEGThumbnail(uint8Array, file.name);
+      if (jpegData && jpegData.length > 100) {
+        const blob = new Blob([jpegData], { type: 'image/jpeg' });
+        const imageBitmap = await createImageBitmap(blob);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return null;
+
+        canvas.width = Math.min(imageBitmap.width, maxWidth);
+        canvas.height = Math.min(imageBitmap.height, maxHeight);
+        ctx.drawImage(imageBitmap, 0, 0, canvas.width, canvas.height);
+
+        return new Promise((resolve) => {
+          canvas.toBlob((resultBlob) => resolve(resultBlob), 'image/webp', lossless ? 1.0 : quality);
+        });
+      }
+
+      return null;
+    } catch (error) {
+      console.error('RAW conversion failed:', error);
+      return null;
+    }
   }
 
   static async createRAWPreview(file: File): Promise<string> {
