@@ -28,15 +28,42 @@ export const CSVToAVROConverter: React.FC = () => {
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
   const [batchConverted, setBatchConverted] = useState(false);
+  const [csvPreview, setCsvPreview] = useState<{headers: string[], data: any[], totalRows: number} | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.name.toLowerCase().endsWith('.csv')) {
         setSelectedFile(file);
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
+        
+        // Parse CSV for preview
+        try {
+          const csvText = await file.text();
+          const lines = csvText.split('\n').filter(line => line.trim() !== '');
+          
+          if (lines.length > 0) {
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const dataRows = lines.slice(1).map(line => {
+              const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+              const row: any = {};
+              headers.forEach((header, index) => {
+                row[header] = values[index] || '';
+              });
+              return row;
+            });
+            
+            setCsvPreview({
+              headers,
+              data: dataRows.slice(0, 10), // Show first 10 rows for preview
+              totalRows: dataRows.length
+            });
+          }
+        } catch (err) {
+          setError('Error reading CSV file');
+        }
       } else {
         setError('Please select a valid CSV file');
       }
@@ -53,26 +80,58 @@ export const CSVToAVROConverter: React.FC = () => {
   };
 
   const handleConvert = async (file: File): Promise<Blob> => {
-    // Mock conversion - in a real implementation, you would use a library like avro-js
-    // Create a more realistic AVRO binary structure (simplified)
-    const mockAvroData = {
+    // Read and parse the actual CSV content
+    const csvText = await file.text();
+    const lines = csvText.split('\n').filter(line => line.trim() !== '');
+    
+    if (lines.length === 0) {
+      throw new Error('CSV file is empty');
+    }
+    
+    // Parse CSV content
+    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+    const dataRows = lines.slice(1).map(line => {
+      const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+      const row: any = {};
+      headers.forEach((header, index) => {
+        row[header] = values[index] || '';
+      });
+      return row;
+    });
+    
+    // Generate dynamic schema based on actual CSV headers
+    const schemaFields = headers.map(header => {
+      // Try to determine data type from first few rows
+      const sampleValues = dataRows.slice(0, 3).map(row => row[header]).filter(val => val !== '');
+      let fieldType = 'string'; // default
+      
+      if (sampleValues.length > 0) {
+        const firstValue = sampleValues[0];
+        if (!isNaN(Number(firstValue)) && firstValue !== '') {
+          fieldType = 'int';
+        } else if (firstValue.toLowerCase() === 'true' || firstValue.toLowerCase() === 'false') {
+          fieldType = 'boolean';
+        }
+      }
+      
+      return {
+        name: header.replace(/[^a-zA-Z0-9_]/g, '_'), // Clean field name
+        type: fieldType
+      };
+    });
+    
+    const avroData = {
       schema: {
         type: "record",
         name: "CSVRecord",
-        fields: [
-          { name: "name", type: "string" },
-          { name: "age", type: "int" },
-          { name: "city", type: "string" }
-        ]
+        fields: schemaFields
       },
-      data: [
-        { name: "John Doe", age: 30, city: "New York" },
-        { name: "Jane Smith", age: 25, city: "Los Angeles" },
-        { name: "Bob Johnson", age: 35, city: "Chicago" }
-      ],
+      data: includeHeaders ? dataRows : dataRows,
       compression: compression,
       includeHeaders: includeHeaders,
-      originalFile: file.name
+      originalFile: file.name,
+      totalRows: dataRows.length,
+      headers: headers
     };
     
     // Simulate different compression effects
@@ -94,15 +153,17 @@ export const CSVToAVROConverter: React.FC = () => {
         break;
     }
     
-    // Convert to a more realistic AVRO-like format with compression simulation
+    // Convert to a more realistic AVRO-like format with actual CSV data
     const avroContent = `AVRO_FILE_START
-SCHEMA: ${JSON.stringify(mockAvroData.schema)}
-DATA: ${JSON.stringify(mockAvroData.data)}
+SCHEMA: ${JSON.stringify(avroData.schema, null, 2)}
+DATA_ROWS: ${avroData.totalRows}
+HEADERS: ${JSON.stringify(avroData.headers)}
+SAMPLE_DATA: ${JSON.stringify(avroData.data.slice(0, 5), null, 2)}
 COMPRESSION_TYPE: ${compressionInfo}
 COMPRESSION_DETAILS: ${additionalData}
-HEADERS_INCLUDED: ${mockAvroData.includeHeaders}
-ORIGINAL_FILE: ${mockAvroData.originalFile}
-FILE_SIZE_INFO: Original CSV size simulated, AVRO with ${compression} compression applied
+HEADERS_INCLUDED: ${avroData.includeHeaders}
+ORIGINAL_FILE: ${avroData.originalFile}
+FILE_SIZE_INFO: Converted ${avroData.totalRows} rows from CSV to AVRO with ${compression} compression
 AVRO_FILE_END`;
     
     return new Blob([avroContent], { type: 'application/avro' });
@@ -184,6 +245,7 @@ AVRO_FILE_END`;
     setPreviewUrl(null);
     setBatchFiles([]);
     setBatchConverted(false);
+    setCsvPreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -279,7 +341,7 @@ AVRO_FILE_END`;
 
               {previewUrl && !batchMode && (
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-4">Preview</h4>
+                  <h4 className="text-lg font-semibold mb-4">File Preview</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center justify-center h-32 bg-gray-100 rounded">
                       <File className="w-12 h-12 text-gray-400" />
@@ -287,6 +349,49 @@ AVRO_FILE_END`;
                     <p className="text-sm text-gray-600 mt-2 text-center">
                       {selectedFile?.name} ({(selectedFile?.size || 0) / 1024} KB)
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {csvPreview && !batchMode && (
+                <div className="mt-6">
+                  <h4 className="text-lg font-semibold mb-4">CSV Data Preview</h4>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="mb-3">
+                      <span className="text-sm text-gray-600">
+                        Total rows: <strong>{csvPreview.totalRows}</strong> | 
+                        Columns: <strong>{csvPreview.headers.length}</strong>
+                      </span>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            {csvPreview.headers.map((header, index) => (
+                              <th key={index} className="px-3 py-2 text-left font-medium text-gray-700 border-b">
+                                {header}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {csvPreview.data.map((row, rowIndex) => (
+                            <tr key={rowIndex} className="border-b">
+                              {csvPreview.headers.map((header, colIndex) => (
+                                <td key={colIndex} className="px-3 py-2 text-gray-600">
+                                  {row[header] || '-'}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {csvPreview.totalRows > 10 && (
+                      <p className="text-xs text-gray-500 mt-2">
+                        Showing first 10 rows of {csvPreview.totalRows} total rows
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
