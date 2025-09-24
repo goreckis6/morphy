@@ -34,88 +34,106 @@ export const DNGToWebPConverter: React.FC = () => {
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.name.toLowerCase().endsWith('.dng')) {
+      if (file.name.toLowerCase().endsWith('.dng') || file.type.startsWith('image/')) {
         setSelectedFile(file);
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
         
-        // Try to extract JPEG preview for actual preview
-        try {
-          const reader = new FileReader();
-          reader.onload = async (e) => {
-            try {
-              const arrayBuffer = e.target?.result as ArrayBuffer;
-              const uint8Array = new Uint8Array(arrayBuffer);
-              
-              // Look for embedded JPEG thumbnail
-              const jpegStart = findJPEGStart(uint8Array);
-              const jpegEnd = findJPEGEnd(uint8Array, jpegStart);
-              
-              if (jpegStart !== -1 && jpegEnd !== -1) {
-                // Extract the JPEG preview
-                const jpegData = uint8Array.slice(jpegStart, jpegEnd + 2);
-                const jpegBlob = new Blob([jpegData], { type: 'image/jpeg' });
-                const jpegUrl = URL.createObjectURL(jpegBlob);
+        // Try to load the image directly first
+        const img = new Image();
+        img.onload = () => {
+          console.log('Direct image preview loaded successfully');
+          setImagePreview({
+            url: URL.createObjectURL(file),
+            width: img.width,
+            height: img.height
+          });
+          setPreviewUrl(URL.createObjectURL(file));
+        };
+        
+        img.onerror = () => {
+          console.log('Direct image loading failed, trying JPEG extraction...');
+          // If direct loading fails, try to extract JPEG preview
+          try {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+              try {
+                const arrayBuffer = e.target?.result as ArrayBuffer;
+                const uint8Array = new Uint8Array(arrayBuffer);
                 
-                // Create image to get dimensions
-                const img = new Image();
-                img.onload = () => {
-                  setImagePreview({
-                    url: jpegUrl,
-                    width: img.width,
-                    height: img.height
-                  });
-                  // Update preview URL to show actual extracted image
-                  setPreviewUrl(jpegUrl);
-                };
-                img.onerror = () => {
-                  // Fallback to file info only
+                // Look for embedded JPEG thumbnail
+                const jpegStart = findJPEGStart(uint8Array);
+                const jpegEnd = findJPEGEnd(uint8Array, jpegStart);
+                
+                if (jpegStart !== -1 && jpegEnd !== -1) {
+                  // Extract the JPEG preview
+                  const jpegData = uint8Array.slice(jpegStart, jpegEnd + 2);
+                  const jpegBlob = new Blob([jpegData], { type: 'image/jpeg' });
+                  const jpegUrl = URL.createObjectURL(jpegBlob);
+                  
+                  // Create image to get dimensions
+                  const extractImg = new Image();
+                  extractImg.onload = () => {
+                    console.log('Extracted JPEG preview loaded successfully');
+                    setImagePreview({
+                      url: jpegUrl,
+                      width: extractImg.width,
+                      height: extractImg.height
+                    });
+                    // Update preview URL to show actual extracted image
+                    setPreviewUrl(jpegUrl);
+                  };
+                  extractImg.onerror = () => {
+                    // Fallback to file info only
+                    setImagePreview({
+                      url: URL.createObjectURL(file),
+                      width: 0,
+                      height: 0
+                    });
+                    URL.revokeObjectURL(jpegUrl);
+                  };
+                  extractImg.src = jpegUrl;
+                } else {
+                  // No JPEG preview found, show file info only
                   setImagePreview({
                     url: URL.createObjectURL(file),
                     width: 0,
                     height: 0
                   });
-                  URL.revokeObjectURL(jpegUrl);
-                };
-                img.src = jpegUrl;
-              } else {
-                // No JPEG preview found, show file info only
+                }
+              } catch (error) {
+                // Error reading file, show basic info
                 setImagePreview({
                   url: URL.createObjectURL(file),
                   width: 0,
                   height: 0
                 });
               }
-            } catch (error) {
-              // Error reading file, show basic info
-              setImagePreview({
-                url: URL.createObjectURL(file),
-                width: 0,
-                height: 0
-              });
-            }
-          };
-          reader.readAsArrayBuffer(file);
-        } catch (error) {
-          // Error processing file, show basic info
-          setImagePreview({
-            url: URL.createObjectURL(file),
-            width: 0,
-            height: 0
-          });
-        }
+            };
+            reader.readAsArrayBuffer(file);
+          } catch (error) {
+            // Error processing file, show basic info
+            setImagePreview({
+              url: URL.createObjectURL(file),
+              width: 0,
+              height: 0
+            });
+          }
+        };
+        
+        img.src = URL.createObjectURL(file);
       } else {
-        setError('Please select a valid DNG file');
+        setError('Please select a valid DNG or image file');
       }
     }
   };
 
   const handleBatchFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    const dngFiles = files.filter(file => 
-      file.name.toLowerCase().endsWith('.dng')
+    const imageFiles = files.filter(file => 
+      file.name.toLowerCase().endsWith('.dng') || file.type.startsWith('image/')
     );
-    setBatchFiles(dngFiles);
+    setBatchFiles(imageFiles);
     setError(null);
   };
 
@@ -290,14 +308,48 @@ export const DNGToWebPConverter: React.FC = () => {
 
   const handleConvert = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
-      try {
+      // First, try to load the file as an image directly (for any image format including DNG if browser supports it)
+      const img = new Image();
+      
+      img.onload = () => {
+        console.log(`Image loaded directly: ${img.width}x${img.height}`);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context not available'));
+          return;
+        }
+        
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        const qualityValue = lossless ? 1.0 : (quality === 'high' ? 0.9 : quality === 'medium' ? 0.7 : 0.5);
+        console.log(`Converting your image to WebP with quality: ${qualityValue}`);
+        
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(img.src);
+          if (blob) {
+            console.log(`Your image converted to WebP: ${blob.size} bytes`);
+            resolve(blob);
+          } else {
+            reject(new Error('Failed to convert your image to WebP'));
+          }
+        }, 'image/webp', qualityValue);
+      };
+      
+      img.onerror = () => {
+        console.log('Direct image loading failed, trying JPEG extraction from file...');
+        URL.revokeObjectURL(img.src);
+        
+        // If direct loading fails, try to extract JPEG from the file
         const reader = new FileReader();
         reader.onload = async (e) => {
           try {
             const arrayBuffer = e.target?.result as ArrayBuffer;
             const uint8Array = new Uint8Array(arrayBuffer);
             
-            console.log(`Processing DNG file: ${file.name}, size: ${uint8Array.length} bytes`);
+            console.log(`Processing file: ${file.name}, size: ${uint8Array.length} bytes`);
             
             // Look for embedded JPEG preview to convert to WebP
             const jpegStart = findJPEGStart(uint8Array);
@@ -306,69 +358,65 @@ export const DNGToWebPConverter: React.FC = () => {
             console.log(`JPEG markers found: start=${jpegStart}, end=${jpegEnd}`);
             
             if (jpegStart !== -1 && jpegEnd !== -1) {
-              console.log('Extracting JPEG preview for conversion...');
+              console.log('Extracting JPEG from your file for conversion...');
               // Extract the JPEG preview and convert to WebP
               const jpegData = uint8Array.slice(jpegStart, jpegEnd + 2);
               const jpegBlob = new Blob([jpegData], { type: 'image/jpeg' });
               const jpegUrl = URL.createObjectURL(jpegBlob);
               
-              const img = new Image();
-              img.onload = () => {
-                console.log(`JPEG loaded successfully: ${img.width}x${img.height}`);
+              const extractedImg = new Image();
+              extractedImg.onload = () => {
+                console.log(`Extracted JPEG loaded: ${extractedImg.width}x${extractedImg.height}`);
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 if (!ctx) {
                   URL.revokeObjectURL(jpegUrl);
-                  console.log('Canvas context not available, using sample');
-                  generateSampleWebP(file, resolve);
+                  reject(new Error('Canvas context not available'));
                   return;
                 }
                 
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
+                canvas.width = extractedImg.width;
+                canvas.height = extractedImg.height;
+                ctx.drawImage(extractedImg, 0, 0);
                 
                 const qualityValue = lossless ? 1.0 : (quality === 'high' ? 0.9 : quality === 'medium' ? 0.7 : 0.5);
-                console.log(`Converting to WebP with quality: ${qualityValue}`);
+                console.log(`Converting extracted image to WebP with quality: ${qualityValue}`);
                 
                 canvas.toBlob((blob) => {
                   URL.revokeObjectURL(jpegUrl);
                   if (blob) {
-                    console.log(`WebP conversion successful: ${blob.size} bytes`);
+                    console.log(`Extracted image converted to WebP: ${blob.size} bytes`);
                     resolve(blob);
                   } else {
-                    console.log('Canvas toBlob failed, using sample');
-                    generateSampleWebP(file, resolve);
+                    reject(new Error('Failed to convert extracted image to WebP'));
                   }
                 }, 'image/webp', qualityValue);
               };
               
-              img.onerror = () => {
-                console.log('Failed to load extracted JPEG, using sample');
+              extractedImg.onerror = () => {
+                console.log('Failed to load extracted JPEG');
                 URL.revokeObjectURL(jpegUrl);
-                generateSampleWebP(file, resolve);
+                reject(new Error('Could not process the image data from your file'));
               };
               
-              img.src = jpegUrl;
+              extractedImg.src = jpegUrl;
             } else {
-              console.log('No JPEG preview found in DNG, generating sample WebP');
-              // Create a more realistic sample that shows conversion happened
-              generateRealisticSample(file, resolve);
+              console.log('No usable image data found in file');
+              reject(new Error('No image data found in your file. Please upload a valid image or DNG file.'));
             }
           } catch (error) {
-            console.log('Error processing DNG:', error);
-            generateRealisticSample(file, resolve);
+            console.log('Error processing file:', error);
+            reject(new Error('Failed to process your file'));
           }
         };
         reader.onerror = () => {
-          console.log('FileReader error');
-          generateRealisticSample(file, resolve);
+          reject(new Error('Failed to read your file'));
         };
         reader.readAsArrayBuffer(file);
-      } catch (error) {
-        console.log('Outer error:', error);
-        generateRealisticSample(file, resolve);
-      }
+      };
+      
+      // Try to load the file directly as an image first
+      img.src = URL.createObjectURL(file);
     });
   };
 
@@ -564,7 +612,7 @@ export const DNGToWebPConverter: React.FC = () => {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".dng"
+                  accept=".dng,image/*"
                   multiple={batchMode}
                   onChange={batchMode ? handleBatchFileSelect : handleFileSelect}
                   className="hidden"
