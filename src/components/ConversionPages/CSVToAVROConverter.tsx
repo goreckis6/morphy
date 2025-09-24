@@ -405,6 +405,17 @@ AVRO_FILE_END`;
                   <option value="snappy">Snappy (Fast)</option>
                   <option value="bzip2">Bzip2 (Best)</option>
                 </select>
+                <div className="mt-2 text-sm text-gray-600">
+                  {compression === 'deflate' && (
+                    <span className="text-blue-600">✓ Good balance of speed and compression (~60% size reduction)</span>
+                  )}
+                  {compression === 'snappy' && (
+                    <span className="text-green-600">✓ Fast compression, moderate size reduction (~40% size reduction)</span>
+                  )}
+                  {compression === 'bzip2' && (
+                    <span className="text-purple-600">✓ High compression, slower processing (~80% size reduction)</span>
+                  )}
+                </div>
               </div>
 
               <div className="mb-6">
