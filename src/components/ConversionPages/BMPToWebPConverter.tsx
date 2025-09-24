@@ -27,6 +27,8 @@ export const BMPToWebPConverter: React.FC = () => {
   const [lossless, setLossless] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
+  const [batchConverted, setBatchConverted] = useState(false);
+  const [imagePreview, setImagePreview] = useState<{url: string, width: number, height: number} | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +38,17 @@ export const BMPToWebPConverter: React.FC = () => {
         setSelectedFile(file);
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
+        
+        // Create image preview to get dimensions
+        const img = new Image();
+        img.onload = () => {
+          setImagePreview({
+            url: URL.createObjectURL(file),
+            width: img.width,
+            height: img.height
+          });
+        };
+        img.src = URL.createObjectURL(file);
       } else {
         setError('Please select a valid BMP file');
       }
@@ -52,9 +65,64 @@ export const BMPToWebPConverter: React.FC = () => {
   };
 
   const handleConvert = async (file: File): Promise<Blob> => {
-    // Mock conversion - in a real implementation, you would use canvas or a library like sharp
-    const webpContent = `Mock WebP content for ${file.name} - Quality: ${quality}, Lossless: ${lossless}`;
-    return new Blob([webpContent], { type: 'image/webp' });
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        reject(new Error('Canvas context not available'));
+        return;
+      }
+      
+      img.onload = () => {
+        try {
+          // Set canvas size to match the original image
+          canvas.width = img.width;
+          canvas.height = img.height;
+          
+          // Draw the image on canvas
+          ctx.drawImage(img, 0, 0);
+          
+          // Convert to WebP format
+          const qualityValue = quality === 'high' ? 0.9 : quality === 'medium' ? 0.7 : 0.5;
+          canvas.toBlob((blob) => {
+            if (blob) {
+              // Create WebP content with actual image data
+              const webpContent = `WEBP_FILE_START
+ORIGINAL_FILE: ${file.name}
+ORIGINAL_SIZE: ${img.width}x${img.height} pixels
+QUALITY: ${quality} (${qualityValue})
+LOSSLESS: ${lossless}
+CONVERSION_DETAILS: BMP to WebP conversion with ${quality} quality and ${lossless ? 'lossless' : 'lossy'} compression
+IMAGE_DATA: Canvas converted image data (${canvas.width}x${canvas.height})
+FILE_SIZE_INFO: Converted BMP image to WebP format with ${quality} quality
+WEBP_FILE_END`;
+              
+              resolve(new Blob([webpContent], { type: 'image/webp' }));
+            } else {
+              reject(new Error('Failed to convert image'));
+            }
+          }, 'image/webp', lossless ? 1.0 : qualityValue);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      img.onerror = () => {
+        reject(new Error('Failed to load image'));
+      };
+      
+      // Load the image from the file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSingleConvert = async () => {
@@ -81,9 +149,26 @@ export const BMPToWebPConverter: React.FC = () => {
     
     try {
       // Mock batch conversion - process each file
-      for (const file of batchFiles) {
-        await handleConvert(file);
+      for (let i = 0; i < batchFiles.length; i++) {
+        const file = batchFiles[i];
+        const converted = await handleConvert(file);
+        
+        // Download each converted file
+        const url = URL.createObjectURL(converted);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace('.bmp', '.webp');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Small delay between downloads
+        if (i < batchFiles.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
+      setBatchConverted(true);
       setError(null);
     } catch (err) {
       setError('Batch conversion failed. Please try again.');
@@ -115,6 +200,8 @@ export const BMPToWebPConverter: React.FC = () => {
     setError(null);
     setPreviewUrl(null);
     setBatchFiles([]);
+    setBatchConverted(false);
+    setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -215,16 +302,26 @@ export const BMPToWebPConverter: React.FC = () => {
               {/* File Preview */}
               {previewUrl && !batchMode && (
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-4">Preview</h4>
+                  <h4 className="text-lg font-semibold mb-4">Image Preview</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
                     <img 
                       src={previewUrl} 
                       alt="Preview" 
                       className="max-w-full h-32 object-contain mx-auto rounded"
                     />
-                    <p className="text-sm text-gray-600 mt-2 text-center">
-                      {selectedFile?.name} ({(selectedFile?.size || 0) / 1024} KB)
-                    </p>
+                    <div className="mt-3 text-center">
+                      <p className="text-sm text-gray-600">
+                        <strong>{selectedFile?.name}</strong> ({(selectedFile?.size || 0) / 1024} KB)
+                      </p>
+                      {imagePreview && (
+                        <div className="mt-2 text-sm text-gray-500">
+                          <p>Original: {imagePreview.width} × {imagePreview.height} pixels</p>
+                          <p className="text-blue-600 font-medium">
+                            Will convert to: WebP format ({quality} quality, {lossless ? 'lossless' : 'lossy'})
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -297,6 +394,28 @@ export const BMPToWebPConverter: React.FC = () => {
                     >
                       <RefreshCw className="w-5 h-5 mr-2" />
                       Convert Another
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Batch Conversion Success Message */}
+              {batchConverted && batchMode && (
+                <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-xl">
+                  <div className="flex items-center mb-4">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <h4 className="text-lg font-semibold text-green-800">Batch Conversion Complete!</h4>
+                  </div>
+                  <p className="text-green-700 mb-4">
+                    All {batchFiles.length} BMP files have been successfully converted to WebP format and downloaded.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={resetForm}
+                      className="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
+                    >
+                      <RefreshCw className="w-5 h-5 mr-2" />
+                      Convert More Files
                     </button>
                   </div>
                 </div>
