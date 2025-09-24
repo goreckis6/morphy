@@ -27,6 +27,7 @@ export const AVROToJSONConverter: React.FC = () => {
   const [includeSchema, setIncludeSchema] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
+  const [batchConverted, setBatchConverted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,9 +88,26 @@ export const AVROToJSONConverter: React.FC = () => {
     
     try {
       // Mock batch conversion - process each file
-      for (const file of batchFiles) {
-        await handleConvert(file);
+      for (let i = 0; i < batchFiles.length; i++) {
+        const file = batchFiles[i];
+        const converted = await handleConvert(file);
+        
+        // Download each converted file
+        const url = URL.createObjectURL(converted);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name.replace('.avro', '.json');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Small delay between downloads
+        if (i < batchFiles.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
+      setBatchConverted(true);
       setError(null);
     } catch (err) {
       setError('Batch conversion failed. Please try again.');
@@ -121,6 +139,7 @@ export const AVROToJSONConverter: React.FC = () => {
     setError(null);
     setPreviewUrl(null);
     setBatchFiles([]);
+    setBatchConverted(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -301,6 +320,28 @@ export const AVROToJSONConverter: React.FC = () => {
                     >
                       <RefreshCw className="w-5 h-5 mr-2" />
                       Convert Another
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Batch Conversion Success Message */}
+              {batchConverted && batchMode && (
+                <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-xl">
+                  <div className="flex items-center mb-4">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <h4 className="text-lg font-semibold text-green-800">Batch Conversion Complete!</h4>
+                  </div>
+                  <p className="text-green-700 mb-4">
+                    All {batchFiles.length} AVRO files have been successfully converted to JSON format and downloaded.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={resetForm}
+                      className="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center"
+                    >
+                      <RefreshCw className="w-5 h-5 mr-2" />
+                      Convert More Files
                     </button>
                   </div>
                 </div>
