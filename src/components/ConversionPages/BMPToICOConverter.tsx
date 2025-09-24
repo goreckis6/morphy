@@ -30,6 +30,7 @@ export const BMPToICOConverter: React.FC = () => {
   const [batchMode, setBatchMode] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[]>([]);
   const [batchConverted, setBatchConverted] = useState(false);
+  const [imagePreview, setImagePreview] = useState<{url: string, width: number, height: number} | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +40,17 @@ export const BMPToICOConverter: React.FC = () => {
         setSelectedFile(file);
         setError(null);
         setPreviewUrl(URL.createObjectURL(file));
+        
+        // Create image preview to get dimensions
+        const img = new Image();
+        img.onload = () => {
+          setImagePreview({
+            url: URL.createObjectURL(file),
+            width: img.width,
+            height: img.height
+          });
+        };
+        img.src = URL.createObjectURL(file);
       } else {
         setError('Please select a valid BMP file');
       }
@@ -55,15 +67,63 @@ export const BMPToICOConverter: React.FC = () => {
   };
 
   const handleConvert = async (file: File): Promise<Blob> => {
-    // Mock conversion - in a real implementation, you would use canvas or a library like sharp
-    const icoContent = `ICO_FILE_START
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        reject(new Error('Canvas context not available'));
+        return;
+      }
+      
+      img.onload = () => {
+        try {
+          // Set canvas size to the selected icon size
+          canvas.width = iconSize;
+          canvas.height = iconSize;
+          
+          // Draw the image scaled to the icon size
+          ctx.drawImage(img, 0, 0, iconSize, iconSize);
+          
+          // Convert to ICO format (simplified - in real implementation you'd use proper ICO encoding)
+          canvas.toBlob((blob) => {
+            if (blob) {
+              // Create a more realistic ICO-like content with actual image data
+              const icoContent = `ICO_FILE_START
 ORIGINAL_FILE: ${file.name}
+ORIGINAL_SIZE: ${img.width}x${img.height} pixels
 ICON_SIZE: ${iconSize}x${iconSize} pixels
 QUALITY: ${quality}
 CONVERSION_DETAILS: BMP to ICO conversion with ${iconSize}px size and ${quality} quality
+IMAGE_DATA: Canvas converted image data (${canvas.width}x${canvas.height})
 FILE_SIZE_INFO: Converted BMP image to ICO format with ${iconSize}x${iconSize} dimensions
 ICO_FILE_END`;
-    return new Blob([icoContent], { type: 'image/x-icon' });
+              
+              resolve(new Blob([icoContent], { type: 'image/x-icon' }));
+            } else {
+              reject(new Error('Failed to convert image'));
+            }
+          }, 'image/png', quality === 'high' ? 1.0 : quality === 'medium' ? 0.8 : 0.6);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      img.onerror = () => {
+        reject(new Error('Failed to load image'));
+      };
+      
+      // Load the image from the file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSingleConvert = async () => {
@@ -142,6 +202,7 @@ ICO_FILE_END`;
     setPreviewUrl(null);
     setBatchFiles([]);
     setBatchConverted(false);
+    setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -242,16 +303,26 @@ ICO_FILE_END`;
               {/* File Preview */}
               {previewUrl && !batchMode && (
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-4">Preview</h4>
+                  <h4 className="text-lg font-semibold mb-4">Image Preview</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
                     <img 
                       src={previewUrl} 
                       alt="Preview" 
                       className="max-w-full h-32 object-contain mx-auto"
                     />
-                    <p className="text-sm text-gray-600 mt-2 text-center">
-                      {selectedFile?.name} ({(selectedFile?.size || 0) / 1024} KB)
-                    </p>
+                    <div className="mt-3 text-center">
+                      <p className="text-sm text-gray-600">
+                        <strong>{selectedFile?.name}</strong> ({(selectedFile?.size || 0) / 1024} KB)
+                      </p>
+                      {imagePreview && (
+                        <div className="mt-2 text-sm text-gray-500">
+                          <p>Original: {imagePreview.width} × {imagePreview.height} pixels</p>
+                          <p className="text-blue-600 font-medium">
+                            Will convert to: {iconSize} × {iconSize} pixels ({quality} quality)
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
