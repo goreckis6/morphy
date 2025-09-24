@@ -32,9 +32,16 @@ export class RAWProcessor {
       // Ensure process env stub for libraw.js (browser compatibility)
       const globalAny = globalThis as any;
       if (typeof globalAny.process === 'undefined') {
-        globalAny.process = { env: {} };
-      } else if (typeof globalAny.process.env === 'undefined') {
-        globalAny.process.env = {};
+        globalAny.process = { env: {}, versions: { modules: false } };
+      } else {
+        if (typeof globalAny.process.env === 'undefined') {
+          globalAny.process.env = {};
+        }
+        if (typeof globalAny.process.versions === 'undefined') {
+          globalAny.process.versions = { modules: false };
+        } else if (typeof globalAny.process.versions.modules === 'undefined') {
+          globalAny.process.versions.modules = false;
+        }
       }
 
       // Dynamically import libraw.js
@@ -145,9 +152,7 @@ export class RAWProcessor {
 
   // Ensure we pass ArrayBuffer to Blob for strict TS compatibility
   private static toArrayBuffer(view: Uint8Array): ArrayBuffer {
-    const copy = new Uint8Array(view.byteLength);
-    copy.set(view);
-    return copy.buffer;
+    return view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength);
   }
 
   static async convertToWebP(file: File, options: RawConversionOptions = {}): Promise<Blob | null> {

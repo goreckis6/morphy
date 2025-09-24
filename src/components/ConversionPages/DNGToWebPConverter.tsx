@@ -112,7 +112,8 @@ export const DNGToWebPConverter: React.FC = () => {
 
   const handleConvert = async (file: File): Promise<Blob> => {
     if (!rawReady) {
-      throw new Error('RAW engine not ready');
+      await RAWProcessor.initializeProcessor();
+      setRawReady(true);
     }
 
     const result = await RAWProcessor.convertToWebP(file, {
